@@ -119,6 +119,14 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
 .map-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
 .map-msg-ok { color: var(--accent); font-weight: 500; }
 .map-msg-bad { color: var(--danger); }
+.guide { border: 1px solid var(--line); background: var(--paper); border-radius: 10px; padding: 12px 14px; }
+.guide summary { cursor: pointer; font-weight: 600; color: var(--accent); font-size: 14.5px; }
+.guide-body { display: grid; gap: 8px; margin-top: 10px; font-size: 14px; }
+.guide-body h3 { font-size: 13px; margin: 6px 0 0; text-transform: uppercase; letter-spacing: .06em; color: var(--muted); }
+.guide-body ol, .guide-body ul { margin: 0; padding-left: 20px; display: grid; gap: 6px; }
+.guide-body p { margin: 0; }
+.scan-link { font-size: 12.5px; color: var(--accent); justify-self: start; }
+.dv-box { display: grid; gap: 14px; border-top: 1px solid var(--line); padding-top: 14px; }
 .ver { margin: 0; font-size: 12px; color: var(--muted); text-align: center; font-family: var(--font-mono); }
 .slot { border: 1px dashed var(--line); border-radius: 8px; padding: 12px; display: grid; gap: 10px; background: var(--field); min-width: 0; }
 .slot-head { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; }
@@ -152,6 +160,30 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
     <p class="lead">Anh/chị điền các thông tin dưới đây. Khi bấm “Tạo tin nhắn”, trang sẽ soạn sẵn nội dung để anh/chị gửi lại cho cán bộ tín dụng qua Zalo.</p>
     <div class="officer-list" id="officerList"></div>
     <p class="notice">Trang này không lưu và không tự gửi thông tin đi đâu. Nội dung và ảnh chỉ đến tay cán bộ khi anh/chị tự gửi qua Zalo. Các mục có dấu <span style="color:var(--danger)">*</span> là bắt buộc. Ảnh giấy tờ nên chụp rõ nét, đủ 4 góc, không bị lóa; có thể bỏ qua và gửi sau.</p>
+    <details class="guide" id="huongDanScan">
+      <summary>Hướng dẫn chụp ảnh giấy tờ rõ nét bằng tính năng Scan của Zalo</summary>
+      <div class="guide-body">
+        <h3>Cách chụp bằng Scan (quét tài liệu) của Zalo</h3>
+        <ol>
+          <li>Mở Zalo, vào cuộc trò chuyện <b>Cloud của tôi</b> (hoặc cuộc trò chuyện với cán bộ ngân hàng).</li>
+          <li>Ở thanh nhắn tin, bấm <b>biểu tượng hình ảnh</b> để mở camera, rồi chọn chế độ <b>Scan</b>.</li>
+          <li>Đặt giấy tờ trên mặt bàn phẳng, nền tối màu, đủ ánh sáng. Canh <b>4 góc giấy tờ vào khung màu xanh</b>, giữ máy song song với giấy, bấm <b>Chụp</b>.</li>
+          <li>Kéo chỉnh 4 góc cho vừa khít mép giấy tờ, không cắt mất chữ.</li>
+          <li>Bấm <b>Tải về</b> để lưu ảnh vào điện thoại. Quay lại phiếu này, bấm <b>+ Chụp / chọn ảnh</b> ở đúng ô và chọn ảnh vừa lưu.</li>
+        </ol>
+        <p class="hint">Hoặc bấm <b>Gửi</b> để gửi thẳng ảnh cho cán bộ trong Zalo, nhớ ghi kèm mã hồ sơ. Tên nút có thể hơi khác tùy phiên bản Zalo; nếu không thấy chế độ Scan, anh/chị cập nhật Zalo lên bản mới nhất.</p>
+        <h3>Yêu cầu để ảnh dùng được</h3>
+        <ul>
+          <li><b>Đủ 4 góc, không cắt mép.</b> Mỗi mặt, mỗi trang là một ảnh: CCCD chụp riêng mặt trước và mặt sau; sổ đỏ, sổ hồng chụp <b>đủ tất cả các trang</b>, kể cả trang bổ sung, thay đổi.</li>
+          <li><b>Đọc rõ từng chữ, từng số.</b> Không mờ, không rung; chụp lại nếu phóng to không đọc được số CCCD, số thửa, số tiền.</li>
+          <li><b>Không lóa sáng.</b> Tắt đèn flash khi chụp CCCD, thẻ có màng bóng; tránh đèn chiếu thẳng xuống giấy.</li>
+          <li><b>Không che, không sửa thông tin.</b> Không để ngón tay, vật khác che chữ; không viết, dán đè hay chỉnh sửa ảnh.</li>
+          <li><b>Chụp bản gốc,</b> không chụp lại màn hình hoặc chụp lại một ảnh khác.</li>
+          <li><b>Giấy tờ nhiều trang</b> (sao kê, hợp đồng): chụp lần lượt từng trang theo thứ tự. Nếu đã có file PDF gốc từ ngân hàng hoặc cơ quan cấp, chọn gửi file PDF.</li>
+          <li><b>Ảnh hiện trạng tài sản</b> (nhà, đất, xe): dùng camera thường, không dùng Scan; chụp ban ngày, thấy rõ toàn cảnh và biển số nhà hoặc biển số xe.</li>
+        </ul>
+      </div>
+    </details>
     <p class="banner" id="zaloInApp" hidden>Anh/chị đang mở trang trong Zalo. Để gửi kèm ảnh giấy tờ, bấm dấu <b>⋯</b> ở góc trên bên phải, chọn <b>Mở bằng trình duyệt</b>, rồi điền phiếu.</p>
   </header>
 
@@ -194,9 +226,16 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
 
     <!-- 2 -->
     <fieldset data-title="THÔNG TIN VỢ/CHỒNG" id="secVoChong" hidden>
-      <legend><div class="sec-head"><span class="sec-no">01b</span><h2 class="sec-title">Thông tin vợ/chồng</h2></div></legend>
-      <p class="sec-note">Vợ/chồng thường cùng ký hồ sơ vay và cùng là nguồn trả nợ.</p>
-      <div class="f"><label for="vcTen">Họ và tên vợ/chồng</label><input type="text" id="vcTen" data-label="Họ và tên"></div>
+      <legend><div class="sec-head"><span class="sec-no">01b</span><h2 class="sec-title" id="vcTitle">Thông tin vợ/chồng</h2></div></legend>
+      <div class="f"><label for="vcCungVay" class="req">Vợ/chồng có cùng đứng tên vay (người đồng vay) không?</label>
+        <select id="vcCungVay" data-label="Vợ/chồng cùng vay" required>
+          <option value="">— Chọn —</option>
+          <option>Có – vợ chồng cùng vay</option>
+          <option>Không – chỉ một người vay</option>
+        </select>
+        <span class="hint">Vay mua nhà, đất, xây sửa nhà, mua ô tô, tiêu dùng cho gia đình… là nghĩa vụ chung của vợ chồng, nên chọn <b>Có</b>. Khi đó vợ/chồng cùng ký hồ sơ và cùng là nguồn trả nợ.</span>
+      </div>
+      <div class="f"><label for="vcTen" id="vcTenLbl">Họ và tên vợ/chồng</label><input type="text" id="vcTen" data-label="Họ và tên" autocomplete="off"></div>
       <div class="row">
         <div class="f"><label for="vcNgaySinh">Ngày sinh</label><div class="date"><input type="text" id="vcNgaySinh" data-label="Ngày sinh" data-date="past" inputmode="numeric" maxlength="10" placeholder="dd/mm/yyyy"></div></div>
         <div class="f"><label for="vcCccd">Số CCCD</label><input type="text" id="vcCccd" data-label="Số CCCD" inputmode="numeric" maxlength="12"></div>
@@ -206,7 +245,32 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
         <div class="f"><label for="vcNghe">Nghề nghiệp, nơi làm việc</label><input type="text" id="vcNghe" data-label="Nghề nghiệp, nơi làm việc"></div>
       </div>
       <div class="f"><label for="vcThuNhap">Thu nhập bình quân/tháng (đồng)</label><input type="text" id="vcThuNhap" class="money" data-label="Thu nhập bình quân/tháng" data-money inputmode="numeric"><span class="hint amt"></span></div>
+      <div class="dv-box" id="dongVayBox" hidden>
+        <div class="slots-label">Thông tin bổ sung của người đồng vay</div>
+        <div class="row">
+          <div class="f"><label for="vcGioiTinh">Giới tính</label><select id="vcGioiTinh" data-label="Giới tính"><option value="">— Chọn —</option><option>Nam</option><option>Nữ</option></select></div>
+          <div class="f"><label for="vcNgayCap">Ngày cấp CCCD</label><div class="date"><input type="text" id="vcNgayCap" data-label="Ngày cấp CCCD" data-date="past" inputmode="numeric" maxlength="10" placeholder="dd/mm/yyyy"></div></div>
+        </div>
+        <div class="f"><label for="vcNoiCap">Nơi cấp CCCD</label><input type="text" id="vcNoiCap" data-label="Nơi cấp CCCD" list="dsNoiCap" placeholder="Chạm để chọn hoặc gõ đúng như trên thẻ"></div>
+        <div class="f"><label for="vcThuongTru">Nơi thường trú</label><input type="text" id="vcThuongTru" data-label="Nơi thường trú">
+          <label class="consent"><input type="checkbox" id="vcCungDC"><span>Cùng nơi thường trú với người vay</span></label>
+        </div>
+        <div class="row">
+          <div class="f"><label for="vcChucVu">Chức vụ / ngành nghề</label><input type="text" id="vcChucVu" data-label="Chức vụ / ngành nghề"></div>
+          <div class="f"><label for="vcThamNien">Thời gian làm việc/kinh doanh</label><input type="text" id="vcThamNien" data-label="Thời gian làm việc/kinh doanh" placeholder="Ví dụ: 4 năm"></div>
+        </div>
+        <div class="row">
+          <div class="f"><label for="vcNguonTN">Nguồn thu nhập chính</label><select id="vcNguonTN" data-label="Nguồn thu nhập chính"><option value="">— Chọn —</option><option>Lương</option><option>Kinh doanh</option><option>Cho thuê tài sản</option><option>Lương hưu, trợ cấp</option><option>Khác</option></select></div>
+          <div class="f"><label for="vcNhanLuong">Nhận lương/doanh thu qua</label><input type="text" id="vcNhanLuong" data-label="Nhận lương/doanh thu qua" placeholder="Tiền mặt / tài khoản ngân hàng nào"></div>
+        </div>
+        <div class="f"><label for="vcTraNo">Khoản vay riêng của người đồng vay đang trả/tháng (đồng)</label><input type="text" id="vcTraNo" class="money" data-label="Đang trả nợ riêng/tháng" data-money inputmode="numeric" placeholder="Bỏ trống nếu không có"><span class="hint amt"></span><span class="hint">Chỉ ghi khoản vay, thẻ tín dụng đứng tên riêng người đồng vay, chưa khai ở mục 05.</span></div>
+      </div>
       <div class="slots" data-slots="vc"><div class="slots-label">Ảnh giấy tờ</div></div>
+      <div class="slots" data-slots="vcdv" id="dvSlots" hidden><div class="slots-label">Ảnh thu nhập của người đồng vay</div></div>
+      <div class="f" id="dvConsent" hidden>
+        <label class="consent"><input type="checkbox" name="vcDongY" value="Người đồng vay đã đồng ý cung cấp thông tin trên, cho phép ngân hàng tra cứu thông tin tín dụng (CIC) và xử lý dữ liệu cá nhân cho mục đích xem xét, thẩm định và quản lý khoản vay" data-label="Xác nhận của người đồng vay" id="vcDongY"><span>Người đồng vay đã đồng ý cung cấp thông tin trên, cho phép ngân hàng tra cứu thông tin tín dụng (CIC) và xử lý dữ liệu cá nhân của mình cho mục đích xem xét, thẩm định và quản lý khoản vay.</span></label>
+        <span class="err" id="errDongY" hidden>Cần có xác nhận đồng ý của người đồng vay.</span>
+      </div>
     </fieldset>
 
     <!-- 3 -->
@@ -259,6 +323,7 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
           <option>Bổ sung vốn sản xuất, kinh doanh</option>
           <option>Khác</option>
         </select>
+        <span class="hint" id="mdWarn"></span>
       </div>
       <div class="f"><label for="moTa">Mô tả cụ thể</label><textarea id="moTa" data-label="Mô tả cụ thể" placeholder="Ví dụ: mua căn hộ 75 m² tại …, giá 3,2 tỷ đồng"></textarea></div>
       <div class="row">
@@ -279,6 +344,30 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
       </div>
       <div class="f"><label for="nguonTra">Nguồn trả nợ</label><input type="text" id="nguonTra" data-label="Nguồn trả nợ" placeholder="Ví dụ: lương của hai vợ chồng, tiền cho thuê nhà"></div>
       <div class="slots" data-slots="md"><div class="slots-label">Ảnh giấy tờ</div></div>
+    </fieldset>
+
+    <!-- 4b: chỉ hiện khi thời hạn vay 1–12 tháng -->
+    <fieldset data-title="TÀI SẢN, NGUỒN TRẢ NỢ CUỐI KỲ" id="secCuoiKy" hidden>
+      <legend><div class="sec-head"><span class="sec-no">03b</span><h2 class="sec-title">Tài sản, nguồn trả nợ cuối kỳ</h2></div></legend>
+      <p class="sec-note">Khoản vay từ 12 tháng trở xuống thường trả gốc một lần hoặc phần lớn vào cuối kỳ. Anh/chị cho biết tiền trả gốc khi đến hạn sẽ đến từ đâu.</p>
+      <div class="f"><label for="ckLoai" class="req">Nguồn trả nợ gốc cuối kỳ</label>
+        <select id="ckLoai" data-label="Loại nguồn trả nợ cuối kỳ" required>
+          <option value="">— Chọn —</option>
+          <option>Sổ tiết kiệm, tiền gửi đến hạn</option>
+          <option>Bán tài sản (nhà đất, xe…)</option>
+          <option>Tiền thu từ hợp đồng, công nợ phải thu</option>
+          <option>Thu nhập tích lũy trong thời gian vay</option>
+          <option>Thưởng, cổ tức, lợi nhuận được chia</option>
+          <option>Khác</option>
+        </select>
+      </div>
+      <div class="f"><label for="ckMoTa">Mô tả tài sản, nguồn tiền</label><input type="text" id="ckMoTa" data-label="Mô tả tài sản/nguồn" placeholder="Ví dụ: sổ tiết kiệm 900 triệu tại ngân hàng X, đến hạn 20/09/2027"></div>
+      <div class="row">
+        <div class="f"><label for="ckGiaTri" class="req">Giá trị dự kiến thu về (đồng)</label><input type="text" id="ckGiaTri" class="money" data-label="Giá trị dự kiến" data-money inputmode="numeric" required><span class="hint amt"></span><span class="hint" id="ckValMsg"></span></div>
+        <div class="f"><label for="ckNgay">Thời điểm dự kiến có tiền</label><div class="date"><input type="text" id="ckNgay" data-label="Thời điểm dự kiến có tiền" data-date="any" inputmode="numeric" maxlength="10" placeholder="dd/mm/yyyy"></div><span class="hint" id="ckDateMsg"></span></div>
+      </div>
+      <div class="f"><label for="ckChu">Chủ sở hữu / người hưởng</label><input type="text" id="ckChu" data-label="Chủ sở hữu/người hưởng" placeholder="Chính chủ / vợ chồng / người khác (ghi rõ)"></div>
+      <div class="slots" data-slots="ck"><div class="slots-label">Ảnh giấy tờ</div></div>
     </fieldset>
 
     <!-- 5 -->
@@ -367,7 +456,7 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
     </div>
     <span class="toast" id="toast"></span>
   </section>
-  <p class="ver">Phiên bản 11/10/2026 – v7</p>
+  <p class="ver">Phiên bản 11/10/2026 – v10</p>
 </div>
 
 <script>
@@ -408,8 +497,10 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
     { sec: 'kh', id: 'cccdSau', name: 'CCCD người vay – mặt sau', file: 'CCCD_mat_sau', max: 1, rec: true },
     { sec: 'kh', id: 'honNhanAnh', name: 'Giấy chứng nhận kết hôn / xác nhận tình trạng hôn nhân', file: 'Hon_nhan', max: 4 },
     { sec: 'vc', id: 'cccdVC', name: 'CCCD vợ/chồng – 2 mặt', file: 'CCCD_vo_chong', max: 2 },
+    { sec: 'vcdv', id: 'vcTNAnh', name: 'Chứng minh thu nhập của người đồng vay', hint: 'Hợp đồng lao động, quyết định lương, sao kê lương 3–6 tháng, đăng ký kinh doanh…', file: 'Thu_nhap_nguoi_dong_vay', max: 15 },
     { sec: 'tn', id: 'thuNhapAnh', name: 'Chứng minh thu nhập', hint: 'Hợp đồng lao động, quyết định lương, sao kê lương 3–6 tháng, đăng ký kinh doanh, sổ doanh thu…', file: 'Thu_nhap', max: 15 },
     { sec: 'md', id: 'mucDichAnh', name: 'Giấy tờ về mục đích vay', hint: 'Hợp đồng mua bán/đặt cọc, dự toán xây sửa, báo giá xe…', file: 'Muc_dich', max: 15 },
+    { sec: 'ck', id: 'ckAnh', name: 'Giấy tờ chứng minh nguồn trả nợ cuối kỳ', hint: 'Sổ tiết kiệm, hợp đồng mua bán/đặt cọc tài sản sẽ bán, hợp đồng kinh tế, xác nhận khoản phải thu…', file: 'Nguon_tra_no_cuoi_ky', max: 10 },
     { sec: 'ts', id: 'tsbdAnh', name: 'Giấy tờ tài sản bảo đảm', hint: 'Sổ đỏ/sổ hồng chụp đủ các trang, đăng ký xe, sổ tiết kiệm…', file: 'TSBD_giay_to', max: 15 },
     { sec: 'ts', id: 'tsHTAnh', name: 'Ảnh hiện trạng tài sản', hint: 'Mặt tiền, toàn cảnh, đường/ngõ vào, bên trong, biển số nhà.', file: 'TSBD_hien_trang', max: 15 },
     { sec: 'vay', id: 'vayAnh', name: 'Hợp đồng/sao kê khoản vay đang có', hint: 'Hợp đồng tín dụng, lịch trả nợ, sao kê thẻ tín dụng…', file: 'Khoan_vay_hien_tai', max: 10 },
@@ -425,7 +516,8 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
     el.innerHTML =
       '<div class="slot-head"><div><div class="slot-name"></div>' + (s.hint ? '<div class="slot-hint"></div>' : '') + '</div><span class="slot-count"></span></div>' +
       '<div class="thumbs"></div>' +
-      '<label class="add">+ Chụp / chọn ảnh<input type="file" id="up_' + s.id + '" accept="image/*,application/pdf"' + (s.max > 1 ? ' multiple' : '') + '></label>';
+      '<label class="add">+ Chụp / chọn ảnh<input type="file" id="up_' + s.id + '" accept="image/*,application/pdf"' + (s.max > 1 ? ' multiple' : '') + '></label>' +
+      '<a class="scan-link" href="#huongDanScan">' + (s.id === 'tsHTAnh' ? 'Cách chụp ảnh hiện trạng tài sản' : 'Cách chụp rõ nét bằng Scan của Zalo') + '</a>';
     el.querySelector('.slot-name').textContent = s.name;
     if (s.hint) el.querySelector('.slot-hint').textContent = s.hint;
     slotsEl.appendChild(el);
@@ -439,6 +531,10 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
         store[s.id].push(item); renderSlot(s);
       }
     });
+  });
+  document.addEventListener('click', e => {
+    const a = e.target.closest('.scan-link'); if (!a) return;
+    e.preventDefault(); const g = $('#huongDanScan'); g.open = true; g.scrollIntoView({ block: 'start' });
   });
   function renderSlot(s) {
     const list = store[s.id]; const box = s.el.querySelector('.thumbs');
@@ -521,7 +617,8 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
   $$('[data-date]').forEach(txt => {
     const wrap = txt.parentElement;
     const cal = document.createElement('span'); cal.className = 'cal'; cal.innerHTML = CAL_SVG;
-    const nat = document.createElement('input'); nat.type = 'date'; nat.max = isoToday; nat.min = '1900-01-01';
+    const nat = document.createElement('input'); nat.type = 'date'; nat.min = '1900-01-01';
+    if (txt.dataset.date === 'any') nat.min = isoToday; else nat.max = isoToday;
     nat.setAttribute('aria-label', 'Chọn ' + txt.dataset.label.toLowerCase() + ' từ lịch');
     cal.appendChild(nat); wrap.appendChild(cal);
     const syncNat = () => { const d = parseDMY(txt.value); nat.value = d ? d.getFullYear() + '-' + p2d(d.getMonth() + 1) + '-' + p2d(d.getDate()) : ''; };
@@ -595,7 +692,25 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
 
   // Phần hiện/ẩn theo lựa chọn
   const toggle = () => {
-    $('#secVoChong').hidden = $('#honNhan').value !== 'Đã kết hôn';
+    const married = $('#honNhan').value === 'Đã kết hôn';
+    $('#secVoChong').hidden = !married;
+    // Người đồng vay: gợi ý theo mục đích vay chung của vợ chồng
+    const md = $('#mucDich').value, joint = JOINT.includes(md), cvSel = $('#vcCungVay');
+    if (married && joint && !cvSel.value) cvSel.value = 'Có – vợ chồng cùng vay';
+    const dongVay = married && cvSel.value.startsWith('Có');
+    ['dongVayBox', 'dvSlots', 'dvConsent'].forEach(id => { $('#' + id).hidden = !dongVay; });
+    $('#vcTitle').textContent = dongVay ? 'Thông tin người đồng vay (vợ/chồng)' : 'Thông tin vợ/chồng';
+    $('#vcTenLbl').textContent = dongVay ? 'Họ và tên người đồng vay' : 'Họ và tên vợ/chồng';
+    ['vcTen', 'vcNgaySinh', 'vcCccd', 'vcSdt'].forEach(id => {
+      $('#' + id).required = dongVay; const lb = $('label[for="' + id + '"]'); if (lb) lb.classList.toggle('req', dongVay);
+    });
+    const mw = $('#mdWarn');
+    if (married && joint && cvSel.value.startsWith('Không')) { mw.textContent = 'Mục đích này thường là nhu cầu chung của vợ chồng. Anh/chị cân nhắc chọn vợ/chồng cùng vay ở mục 01b.'; mw.style.color = 'var(--danger)'; }
+    else if (married && dongVay) { mw.textContent = 'Vợ/chồng cùng vay theo lựa chọn ở mục 01b.'; mw.style.color = 'var(--accent)'; }
+    else mw.textContent = '';
+    const th = Number($('#thoiHan').value || 0);
+    $('#secCuoiKy').hidden = !(th >= 1 && th <= 12);
+    ckCheck();
     const ts = $('#loaiTS').value; $('#tsChiTiet').hidden = !ts || ts === 'Chưa xác định';
     $('#mapBox').hidden = ['Ô tô', 'Sổ tiết kiệm, giấy tờ có giá'].includes(ts);
     const ht = SLOTS.find(s => s.id === 'tsHTAnh');
@@ -607,6 +722,32 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
     $('#srcAmounts').hidden = on.size === 0;
     sumIncome();
   };
+  const JOINT = ['Mua nhà, mua đất ở', 'Xây dựng, sửa chữa nhà ở', 'Mua ô tô', 'Tiêu dùng, phục vụ đời sống'];
+  function syncDC() {
+    const cb = $('#vcCungDC'), vt = $('#vcThuongTru');
+    if (cb.checked) { vt.value = $('#thuongTru').value.trim() || 'Như người vay'; vt.readOnly = true; } else vt.readOnly = false;
+  }
+  $('#vcCungDC').addEventListener('change', syncDC);
+  $('#thuongTru').addEventListener('input', () => { if ($('#vcCungDC').checked) syncDC(); });
+
+  // So nguồn trả nợ cuối kỳ với số tiền vay và ngày đến hạn
+  function ckCheck() {
+    const loan = Number(digits($('#soTien').value) || 0), val = Number(digits($('#ckGiaTri').value) || 0), th = Number($('#thoiHan').value || 0);
+    const vm = $('#ckValMsg');
+    if (loan && val && val < loan) { vm.textContent = 'Thấp hơn số tiền đề nghị vay ' + fmt(String(loan - val)) + ' đ. Anh/chị ghi rõ phần còn lại trả bằng nguồn nào ở ô mô tả.'; vm.style.color = 'var(--danger)'; }
+    else if (loan && val) { vm.textContent = 'Đủ để trả số tiền đề nghị vay.'; vm.style.color = 'var(--accent)'; }
+    else vm.textContent = '';
+    const dm = $('#ckDateMsg'), cd = parseDMY($('#ckNgay').value);
+    if (cd && th) {
+      const t = new Date(), due = new Date(t.getFullYear(), t.getMonth() + th, t.getDate());
+      const late = Math.round((cd - due) / 86400000);
+      dm.textContent = late > 0 ? 'Sau ngày đến hạn dự kiến (' + p2d(due.getDate()) + '/' + p2d(due.getMonth() + 1) + '/' + due.getFullYear() + ') ' + late + ' ngày. Cân nhắc chọn thời hạn vay dài hơn.'
+        : 'Trước ngày đến hạn dự kiến ' + p2d(due.getDate()) + '/' + p2d(due.getMonth() + 1) + '/' + due.getFullYear() + '.';
+      dm.style.color = late > 0 ? 'var(--danger)' : 'var(--accent)';
+    } else dm.textContent = '';
+  }
+  ['soTien', 'ckGiaTri', 'ckNgay', 'thoiHan'].forEach(id => $('#' + id).addEventListener('input', ckCheck));
+  $('#thoiHan').addEventListener('input', () => toggle());
   function sumIncome() {
     const parts = $$('[data-part]').filter(el => !isHidden(el));
     const total = parts.reduce((t, el) => t + Number(digits(el.value) || 0), 0);
@@ -628,13 +769,13 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
   function validate() {
     let first = null;
     const mark = (el, msg) => { setErr(el, msg); if (msg && !first) first = el; };
-    $$('[required]', form).forEach(el => mark(el, el.value.trim() ? '' : 'Mục này cần điền.'));
+    $$('[required]', form).forEach(el => mark(el, isHidden(el) || el.value.trim() ? '' : 'Mục này cần điền.'));
     const today = new Date(); today.setHours(23, 59, 59);
     $$('[data-date]', form).forEach(el => {
       if (!el.value || isHidden(el)) return;
       const d = parseDMY(el.value);
       if (!d || d.getFullYear() < 1900) return mark(el, 'Ngày chưa đúng. Gõ theo dạng ngày/tháng/năm, ví dụ 02/05/1988.');
-      if (d > today) return mark(el, 'Ngày không được sau ngày hôm nay.');
+      if (el.dataset.date !== 'any' && d > today) return mark(el, 'Ngày không được sau ngày hôm nay.');
       if (el.dataset.date === 'birth') {
         const a18 = new Date(d.getFullYear() + 18, d.getMonth(), d.getDate());
         if (a18 > today) mark(el, 'Người vay phải đủ 18 tuổi.');
@@ -645,6 +786,10 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
     const c = $('#cccd'); if (c.value && c.value.length !== 12) mark(c, 'Số CCCD gồm 12 chữ số.');
     const p = $('#sdt'); if (p.value && !/^0\d{9}$/.test(p.value)) mark(p, 'Số điện thoại gồm 10 chữ số, bắt đầu bằng 0.');
     const em = $('#email'); if (em.value && !/^\S+@\S+\.\S+$/.test(em.value)) mark(em, 'Email chưa đúng định dạng.');
+    const vc = $('#vcCccd'); if (!isHidden(vc) && vc.value && vc.value.length !== 12) mark(vc, 'Số CCCD gồm 12 chữ số.');
+    const vp = $('#vcSdt'); if (!isHidden(vp) && vp.value && !/^0\d{9}$/.test(vp.value)) mark(vp, 'Số điện thoại gồm 10 chữ số, bắt đầu bằng 0.');
+    const dvOk = isHidden($('#vcDongY')) || $('#vcDongY').checked;
+    $('#errDongY').hidden = dvOk; if (!dvOk && !first) first = $('#vcDongY');
     const ok = $('#camKet').checked; $('#errConsent').hidden = ok; if (!ok && !first) first = $('#camKet');
     return first;
   }
@@ -673,7 +818,7 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
     });
     const ph = activeSlots().filter(s => store[s.id].length).map(s => '- ' + s.name + ': ' + store[s.id].length + ' tệp');
     lines.push('ẢNH GIẤY TỜ GỬI KÈM', ...(ph.length ? ph : ['- Chưa gửi ảnh, sẽ bổ sung sau.']), '');
-    lines.push('XÁC NHẬN', '- ' + $('#camKet').nextElementSibling.textContent.trim(), '', 'Mẫu phiếu: v7');
+    lines.push('XÁC NHẬN', '- ' + $('#camKet').nextElementSibling.textContent.trim(), '', 'Mẫu phiếu: v10');
     return lines.join('\n');
   }
 
