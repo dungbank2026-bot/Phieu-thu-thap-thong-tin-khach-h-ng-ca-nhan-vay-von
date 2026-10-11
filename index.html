@@ -95,6 +95,24 @@ details { border: 1px solid var(--line); border-radius: 10px; background: var(--
 summary { cursor: pointer; font-weight: 600; }
 details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font-size: 14px; }
 
+.slots { display: grid; gap: 12px; }
+.slot { border: 1px dashed var(--line); border-radius: 8px; padding: 12px; display: grid; gap: 10px; background: var(--field); min-width: 0; }
+.slot-head { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; }
+.slot-name { font-size: 14px; font-weight: 600; }
+.slot-hint { font-size: 12.5px; color: var(--muted); }
+.slot-count { font-family: var(--font-mono); font-size: 12px; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); white-space: nowrap; flex: none; }
+.slot.has .slot-count { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.slot.rec:not(.has) .slot-count { border-color: var(--danger); color: var(--danger); }
+.thumbs { display: grid; grid-template-columns: repeat(auto-fill, minmax(76px, 1fr)); gap: 8px; }
+.thumbs:empty { display: none; }
+.thumb { position: relative; aspect-ratio: 1; max-width: 100%; border-radius: 6px; overflow: hidden; border: 1px solid var(--line); background: var(--paper); display: flex; align-items: center; justify-content: center; font-size: 11px; color: var(--muted); text-align: center; padding: 4px; }
+.thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.thumb button { position: absolute; top: 3px; right: 3px; width: 26px; height: 26px; border-radius: 50%; border: 0; background: rgba(0,0,0,.62); color: #fff; font-size: 15px; line-height: 1; cursor: pointer; }
+.add { position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 6px; min-height: 42px; padding: 8px 14px; border: 1px solid var(--accent); color: var(--accent); border-radius: 7px; font-weight: 600; font-size: 14px; cursor: pointer; justify-self: start; }
+.add input { position: absolute; inset: 0; opacity: 0; cursor: pointer; }
+.add:focus-within { outline: 2px solid var(--accent); outline-offset: 2px; }
+.add.full { display: none; }
+.banner { font-size: 13.5px; background: var(--accent-soft); border-radius: 8px; padding: 10px 12px; }
 #result { display: flex; flex-direction: column; gap: 14px; }
 .steps { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
 #out { font-family: var(--font-mono); font-size: 13px; line-height: 1.6; min-height: 320px; white-space: pre-wrap; }
@@ -262,8 +280,15 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
       <div class="f"><label for="ghiChu">Ghi chú thêm cho cán bộ</label><textarea id="ghiChu" data-label="Ghi chú" placeholder="Thời gian thuận tiện để liên hệ, câu hỏi về khoản vay…"></textarea></div>
     </fieldset>
 
+    <fieldset id="secAnh">
+      <legend><div class="sec-head"><span class="sec-no">06</span><h2 class="sec-title">Ảnh giấy tờ</h2></div></legend>
+      <p class="sec-note">Chụp rõ nét, đủ 4 góc, không bị lóa. Ảnh được nén ngay trên điện thoại và chỉ gửi đi khi anh/chị bấm gửi qua Zalo. Có thể bỏ qua và gửi ảnh sau.</p>
+      <p class="banner" id="zaloInApp" hidden>Anh/chị đang mở trang trong Zalo. Để gửi kèm ảnh, bấm dấu <b>⋯</b> ở góc trên bên phải, chọn <b>Mở bằng trình duyệt</b>, rồi điền tiếp.</p>
+      <div class="slots" id="slots"></div>
+    </fieldset>
+
     <fieldset>
-      <legend><div class="sec-head"><span class="sec-no">06</span><h2 class="sec-title">Xác nhận</h2></div></legend>
+      <legend><div class="sec-head"><span class="sec-no">07</span><h2 class="sec-title">Xác nhận</h2></div></legend>
       <div class="f" id="fConsent">
         <label class="consent"><input type="checkbox" id="camKet"><span>Tôi cam kết thông tin trên là đúng sự thật và đồng ý để ngân hàng tra cứu thông tin tín dụng của tôi (CIC) phục vụ việc xem xét khoản vay.</span></label>
         <span class="err" id="errConsent" hidden>Anh/chị cần đánh dấu xác nhận để tiếp tục.</span>
@@ -275,30 +300,16 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
 
   <section id="result" hidden aria-live="polite">
     <div class="sec-head"><span class="sec-no">→</span><h2 class="sec-title">Gửi cho cán bộ tín dụng</h2></div>
-    <ol class="steps">
-      <li>Bấm <b>Sao chép nội dung</b>.</li>
-      <li id="stepZalo">Mở Zalo, vào cuộc trò chuyện với cán bộ đã gửi anh/chị đường link này.</li>
-      <li>Dán vào ô tin nhắn và gửi. Có thể gửi kèm ảnh giấy tờ ở bên dưới.</li>
-    </ol>
+    <ol class="steps" id="steps"></ol>
     <textarea id="out" readonly aria-label="Nội dung tin nhắn"></textarea>
     <div class="actions">
-      <button type="button" class="btn primary" id="copyBtn">Sao chép nội dung</button>
+      <button type="button" class="btn primary" id="shareBtn" hidden>Gửi qua Zalo</button>
+      <button type="button" class="btn ghost" id="copyBtn">Sao chép nội dung</button>
       <a class="btn ghost" id="zaloBtn" href="#" target="_blank" rel="noopener" hidden>Mở Zalo của cán bộ</a>
       <button type="button" class="btn ghost" id="editBtn">Sửa lại thông tin</button>
     </div>
     <span class="toast" id="toast"></span>
   </section>
-
-  <details>
-    <summary>Giấy tờ anh/chị nên chuẩn bị</summary>
-    <ul>
-      <li>CCCD của người vay và vợ/chồng (nếu có).</li>
-      <li>Giấy chứng nhận kết hôn hoặc xác nhận tình trạng hôn nhân.</li>
-      <li>Hợp đồng lao động, sao kê lương 3–6 tháng gần nhất; hoặc giấy đăng ký hộ kinh doanh, sổ sách doanh thu.</li>
-      <li>Giấy tờ về mục đích vay: hợp đồng mua bán/đặt cọc, dự toán xây sửa, báo giá xe…</li>
-      <li>Giấy chứng nhận quyền sử dụng đất/sở hữu nhà, đăng ký xe hoặc sổ tiết kiệm dùng làm tài sản bảo đảm.</li>
-    </ul>
-  </details>
 </div>
 
 <script>
@@ -308,12 +319,97 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
   const form = $('#form');
 
   // Số Zalo cán bộ: thêm vào cuối đường link dạng #0912345678
-  const phone = (location.hash || '').slice(1);
-  if (/^0\d{9}$/.test(phone)) {
+  const rawPhone = (location.hash || '').slice(1);
+  const phone = /^0\d{9}$/.test(rawPhone) ? rawPhone : '';
+  const phoneFmt = phone.replace(/(\d{4})(\d{3})(\d{3})/, '$1 $2 $3');
+  if (phone) {
     $('#officer').hidden = false;
-    $('#officerPhone').textContent = phone.replace(/(\d{4})(\d{3})(\d{3})/, '$1 $2 $3');
+    $('#officerPhone').textContent = phoneFmt;
     const z = $('#zaloBtn'); z.href = 'https://zalo.me/' + phone; z.hidden = false;
-    $('#stepZalo').innerHTML = 'Bấm <b>Mở Zalo của cán bộ</b> (hoặc tự mở Zalo, tìm số ' + phone + ').';
+  }
+  const inZalo = /zalo/i.test(navigator.userAgent || '');
+  $('#zaloInApp').hidden = !inZalo;
+
+  // Ảnh giấy tờ
+  const SLOTS = [
+    { id: 'cccdTruoc', name: 'CCCD người vay – mặt trước', file: 'CCCD_mat_truoc', max: 1, rec: true },
+    { id: 'cccdSau', name: 'CCCD người vay – mặt sau', file: 'CCCD_mat_sau', max: 1, rec: true },
+    { id: 'cccdVC', name: 'CCCD vợ/chồng – 2 mặt', file: 'CCCD_vo_chong', max: 2, when: () => $('#honNhan').value === 'Đã kết hôn' },
+    { id: 'honNhanAnh', name: 'Giấy chứng nhận kết hôn / xác nhận tình trạng hôn nhân', file: 'Hon_nhan', max: 4 },
+    { id: 'thuNhapAnh', name: 'Chứng minh thu nhập', hint: 'Hợp đồng lao động, sao kê lương 3–6 tháng, đăng ký kinh doanh, sổ doanh thu…', file: 'Thu_nhap', max: 15 },
+    { id: 'mucDichAnh', name: 'Giấy tờ về mục đích vay', hint: 'Hợp đồng mua bán/đặt cọc, dự toán xây sửa, báo giá xe…', file: 'Muc_dich', max: 15 },
+    { id: 'tsbdAnh', name: 'Giấy tờ tài sản bảo đảm', hint: 'Sổ đỏ/sổ hồng chụp đủ các trang, đăng ký xe, sổ tiết kiệm…', file: 'TSBD', max: 15, when: () => { const v = $('#loaiTS').value; return !!v && v !== 'Chưa xác định'; } },
+    { id: 'khacAnh', name: 'Giấy tờ khác', file: 'Khac', max: 10 }
+  ];
+  const store = {}; // id -> [{blob, type, ext, url}]
+  const slotsEl = $('#slots');
+  SLOTS.forEach(s => {
+    store[s.id] = [];
+    const el = document.createElement('div');
+    el.className = 'slot' + (s.rec ? ' rec' : ''); el.dataset.slot = s.id;
+    el.innerHTML =
+      '<div class="slot-head"><div><div class="slot-name"></div>' + (s.hint ? '<div class="slot-hint"></div>' : '') + '</div><span class="slot-count"></span></div>' +
+      '<div class="thumbs"></div>' +
+      '<label class="add">+ Chụp / chọn ảnh<input type="file" id="up_' + s.id + '" accept="image/*,application/pdf"' + (s.max > 1 ? ' multiple' : '') + '></label>';
+    el.querySelector('.slot-name').textContent = s.name;
+    if (s.hint) el.querySelector('.slot-hint').textContent = s.hint;
+    slotsEl.appendChild(el);
+    s.el = el;
+    el.querySelector('input').addEventListener('change', async ev => {
+      const input = ev.target; const files = Array.from(input.files || []);
+      input.value = '';
+      for (const f of files) {
+        if (store[s.id].length >= s.max) break;
+        const item = await compress(f);
+        store[s.id].push(item); renderSlot(s);
+      }
+    });
+  });
+  function renderSlot(s) {
+    const list = store[s.id]; const box = s.el.querySelector('.thumbs');
+    box.innerHTML = '';
+    list.forEach((it, i) => {
+      const t = document.createElement('div'); t.className = 'thumb';
+      if (it.type.startsWith('image/')) { const img = document.createElement('img'); img.src = it.url; img.alt = s.name + ' ' + (i + 1); t.appendChild(img); }
+      else t.textContent = 'Tệp PDF ' + (i + 1);
+      const b = document.createElement('button'); b.type = 'button'; b.textContent = '×'; b.setAttribute('aria-label', 'Xóa ảnh ' + (i + 1));
+      b.addEventListener('click', () => { URL.revokeObjectURL(it.url); list.splice(i, 1); renderSlot(s); });
+      t.appendChild(b); box.appendChild(t);
+    });
+    s.el.classList.toggle('has', list.length > 0);
+    s.el.querySelector('.slot-count').textContent = list.length ? list.length + '/' + s.max : (s.rec ? 'Nên có' : 'Chưa có');
+    s.el.querySelector('.add').classList.toggle('full', list.length >= s.max);
+  }
+  SLOTS.forEach(renderSlot);
+
+  async function compress(file) {
+    const keep = () => ({ blob: file, type: file.type || 'application/octet-stream', ext: (file.name.split('.').pop() || 'bin').toLowerCase(), url: URL.createObjectURL(file) });
+    if (!file.type.startsWith('image/')) return keep();
+    try {
+      let src;
+      try { src = await createImageBitmap(file); }
+      catch (e) {
+        src = await new Promise((res, rej) => { const im = new Image(); im.onload = () => res(im); im.onerror = rej; im.src = URL.createObjectURL(file); });
+      }
+      const w = src.width, h = src.height, M = 1800, k = Math.min(1, M / Math.max(w, h));
+      const c = document.createElement('canvas'); c.width = Math.round(w * k); c.height = Math.round(h * k);
+      c.getContext('2d').drawImage(src, 0, 0, c.width, c.height);
+      const blob = await new Promise(r => c.toBlob(r, 'image/jpeg', 0.82));
+      if (!blob || blob.size >= file.size) return keep();
+      return { blob, type: 'image/jpeg', ext: 'jpg', url: URL.createObjectURL(blob) };
+    } catch (e) { return keep(); }
+  }
+  const slug = s => (s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D').replace(/[^A-Za-z0-9]+/g, '_').replace(/^_|_$/g, '');
+  const activeSlots = () => SLOTS.filter(s => !s.when || s.when());
+  function collectFiles() {
+    const who = slug($('#hoTen').value) || 'KH';
+    const out = []; let n = 0;
+    activeSlots().forEach(s => store[s.id].forEach((it, i) => {
+      n++;
+      const name = String(n).padStart(2, '0') + '_' + who + '_' + s.file + (store[s.id].length > 1 ? '_' + (i + 1) : '') + '.' + it.ext;
+      out.push(new File([it.blob], name, { type: it.type }));
+    }));
+    return out;
   }
 
   // Định dạng tiền
@@ -342,6 +438,7 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
     $('#secVoChong').hidden = $('#honNhan').value !== 'Đã kết hôn';
     const ts = $('#loaiTS').value; $('#tsChiTiet').hidden = !ts || ts === 'Chưa xác định';
     const dv = $('input[name=dangVay]:checked'); $('#vayChiTiet').hidden = !(dv && dv.value === 'Có');
+    SLOTS.forEach(s => { s.el.hidden = !!s.when && !s.when(); });
   };
   form.addEventListener('change', toggle); toggle();
 
@@ -386,6 +483,8 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
       });
       if (rows.length) { lines.push(fs.dataset.title, ...rows, ''); }
     });
+    const ph = activeSlots().filter(s => store[s.id].length).map(s => '- ' + s.name + ': ' + store[s.id].length + ' tệp');
+    lines.push('ẢNH GIẤY TỜ GỬI KÈM', ...(ph.length ? ph : ['- Chưa gửi ảnh, sẽ bổ sung sau.']), '');
     lines.push('XÁC NHẬN', 'Tôi cam kết thông tin trên là đúng sự thật và đồng ý để ngân hàng tra cứu thông tin tín dụng (CIC) phục vụ việc xem xét khoản vay.');
     return lines.join('\n');
   }
@@ -399,8 +498,52 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
     }
     $('#errSummary').hidden = true;
     $('#out').value = build();
+    prepareSend();
     form.hidden = true; $('#result').hidden = false; $('#toast').textContent = '';
     $('#result').scrollIntoView({ block: 'start' });
+  });
+
+  // Chuẩn bị gửi: có ảnh và trình duyệt hỗ trợ chia sẻ tệp thì gửi kèm qua menu chia sẻ
+  let pending = [];
+  function canShareFiles(files) {
+    try { return !!(navigator.share && navigator.canShare && navigator.canShare({ files })); } catch (e) { return false; }
+  }
+  function prepareSend() {
+    pending = collectFiles();
+    const sb = $('#shareBtn');
+    const zaloTo = phone ? 'cán bộ <b>' + phoneFmt + '</b>' : 'cán bộ đã gửi anh/chị đường link này';
+    let steps;
+    if (pending.length && canShareFiles(pending)) {
+      sb.hidden = false; sb.textContent = 'Gửi qua Zalo kèm ' + pending.length + ' tệp';
+      steps = [
+        'Bấm <b>Gửi qua Zalo kèm ' + pending.length + ' tệp</b>, chọn ứng dụng <b>Zalo</b>.',
+        'Chọn cuộc trò chuyện với ' + zaloTo + ' và gửi.',
+        'Nếu Zalo chỉ nhận ảnh mà không có chữ: bấm <b>Sao chép nội dung</b>, rồi dán vào ô tin nhắn và gửi tiếp.'
+      ];
+    } else if (pending.length) {
+      sb.hidden = true;
+      steps = [
+        'Bấm <b>Sao chép nội dung</b>, mở Zalo, vào cuộc trò chuyện với ' + zaloTo + ', dán và gửi.',
+        'Trình duyệt này không gửi kèm ảnh được. Trong Zalo, bấm biểu tượng ảnh và chọn ' + pending.length + ' ảnh giấy tờ từ thư viện để gửi tiếp.' + (inZalo ? ' Hoặc mở trang bằng trình duyệt (dấu ⋯ góc phải) để gửi kèm ảnh một lần.' : '')
+      ];
+    } else {
+      sb.hidden = true;
+      steps = [
+        'Bấm <b>Sao chép nội dung</b>.',
+        'Mở Zalo, vào cuộc trò chuyện với ' + zaloTo + '.',
+        'Dán vào ô tin nhắn và gửi.'
+      ];
+    }
+    $('#steps').innerHTML = steps.map(s => '<li>' + s + '</li>').join('');
+  }
+  $('#shareBtn').addEventListener('click', async () => {
+    try {
+      await navigator.share({ title: 'Phiếu thông tin vay vốn', text: $('#out').value, files: pending });
+      $('#toast').textContent = 'Đã mở Zalo. Nếu tin nhắn chưa có phần chữ, bấm “Sao chép nội dung” rồi dán thêm.';
+    } catch (e) {
+      if (e && e.name === 'AbortError') return;
+      $('#toast').textContent = 'Không gửi kèm được tệp trên trình duyệt này. Anh/chị sao chép nội dung, rồi gửi ảnh từ thư viện trong Zalo.';
+    }
   });
 
   $('#copyBtn').addEventListener('click', () => {
