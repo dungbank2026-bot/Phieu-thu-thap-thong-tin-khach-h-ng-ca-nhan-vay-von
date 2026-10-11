@@ -44,6 +44,14 @@ header { display: flex; flex-direction: column; gap: 8px; }
 .eyebrow { font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
 h1 { font-size: 26px; line-height: 1.25; margin: 0; font-weight: 700; text-wrap: balance; }
 .lead { margin: 0; color: var(--muted); max-width: 60ch; }
+.officer-list { display: flex; flex-wrap: wrap; gap: 8px; }
+.officer-list:empty { display: none; }
+.recips { display: grid; gap: 10px; }
+.recip { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px; border: 1px solid var(--line); background: var(--paper); border-radius: 10px; padding: 12px 14px; }
+.recip-no { font-size: 11.5px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.recip-role { font-size: 13px; color: var(--muted); }
+.recip-phone { font-family: var(--font-mono); font-size: 17px; font-weight: 500; font-variant-numeric: tabular-nums; }
+.recip .btn { min-height: 42px; padding: 8px 16px; }
 .officer { display: inline-flex; gap: 8px; align-items: center; font-size: 14px; background: var(--accent-soft); padding: 6px 12px; border-radius: 999px; align-self: flex-start; }
 .officer b { font-family: var(--font-mono); font-weight: 500; }
 .notice { font-size: 13px; color: var(--muted); border-left: 3px solid var(--line); padding-left: 12px; margin: 0; }
@@ -97,6 +105,13 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
 
 .slots { display: grid; gap: 10px; border-top: 1px solid var(--line); padding-top: 14px; }
 .slots-label { font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.date { position: relative; }
+.date > input[type=text] { padding-right: 56px; font-variant-numeric: tabular-nums; letter-spacing: .02em; }
+.cal { position: absolute; right: 4px; top: 4px; bottom: 4px; width: 46px; border-radius: 6px; display: flex; align-items: center; justify-content: center; color: var(--accent); }
+.cal:hover, .cal:focus-within { background: var(--accent-soft); }
+.cal svg { width: 22px; height: 22px; pointer-events: none; }
+.cal input[type=date] { position: absolute; inset: 0; width: 100%; height: 100%; min-height: 0; padding: 0; border: 0; opacity: 0; cursor: pointer; background: transparent; }
+.cal input[type=date]::-webkit-calendar-picker-indicator { position: absolute; inset: 0; width: 100%; height: 100%; margin: 0; padding: 0; cursor: pointer; }
 .ver { margin: 0; font-size: 12px; color: var(--muted); text-align: center; font-family: var(--font-mono); }
 .slot { border: 1px dashed var(--line); border-radius: 8px; padding: 12px; display: grid; gap: 10px; background: var(--field); min-width: 0; }
 .slot-head { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; }
@@ -117,7 +132,7 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
 .banner { font-size: 13.5px; background: var(--accent-soft); border-radius: 8px; padding: 10px 12px; }
 #result { display: flex; flex-direction: column; gap: 14px; }
 .steps { margin: 0; padding-left: 20px; display: grid; gap: 4px; }
-#out { font-family: var(--font-mono); font-size: 13px; line-height: 1.6; min-height: 320px; white-space: pre-wrap; }
+#out { font-family: var(--font-body); font-size: 13.5px; line-height: 1.6; min-height: 320px; white-space: pre-wrap; }
 .toast { font-size: 14px; color: var(--accent); font-weight: 600; min-height: 1.2em; }
 @media (prefers-reduced-motion: no-preference) { html { scroll-behavior: smooth; } }
 </style>
@@ -128,7 +143,7 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
     <span class="eyebrow">Khách hàng cá nhân</span>
     <h1>Phiếu thông tin vay vốn</h1>
     <p class="lead">Anh/chị điền các thông tin dưới đây. Khi bấm “Tạo tin nhắn”, trang sẽ soạn sẵn nội dung để anh/chị gửi lại cho cán bộ tín dụng qua Zalo.</p>
-    <span class="officer" id="officer" hidden>Cán bộ tiếp nhận: <b id="officerPhone"></b></span>
+    <div class="officer-list" id="officerList"></div>
     <p class="notice">Trang này không lưu và không tự gửi thông tin đi đâu. Nội dung và ảnh chỉ đến tay cán bộ khi anh/chị tự gửi qua Zalo. Các mục có dấu <span style="color:var(--danger)">*</span> là bắt buộc. Ảnh giấy tờ nên chụp rõ nét, đủ 4 góc, không bị lóa; có thể bỏ qua và gửi sau.</p>
     <p class="banner" id="zaloInApp" hidden>Anh/chị đang mở trang trong Zalo. Để gửi kèm ảnh giấy tờ, bấm dấu <b>⋯</b> ở góc trên bên phải, chọn <b>Mở bằng trình duyệt</b>, rồi điền phiếu.</p>
   </header>
@@ -139,12 +154,15 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
       <legend><div class="sec-head"><span class="sec-no">01</span><h2 class="sec-title">Thông tin khách hàng</h2></div></legend>
       <div class="f"><label for="hoTen" class="req">Họ và tên</label><input type="text" id="hoTen" data-label="Họ và tên" required autocomplete="name" placeholder="Ví dụ: Nguyễn Văn An"></div>
       <div class="row">
-        <div class="f"><label for="ngaySinh" class="req">Ngày sinh</label><input type="date" id="ngaySinh" data-label="Ngày sinh" required></div>
+        <div class="f"><label for="ngaySinh" class="req">Ngày sinh</label><div class="date"><input type="text" id="ngaySinh" data-label="Ngày sinh" data-date="birth" required inputmode="numeric" maxlength="10" placeholder="dd/mm/yyyy" autocomplete="bday"></div></div>
         <div class="f"><label for="gioiTinh">Giới tính</label><select id="gioiTinh" data-label="Giới tính"><option value="">— Chọn —</option><option>Nam</option><option>Nữ</option></select></div>
       </div>
       <div class="row">
         <div class="f"><label for="cccd" class="req">Số CCCD</label><input type="text" id="cccd" data-label="Số CCCD" inputmode="numeric" maxlength="12" required placeholder="12 chữ số"></div>
-        <div class="f"><label for="ngayCap">Ngày cấp CCCD</label><input type="date" id="ngayCap" data-label="Ngày cấp CCCD"></div>
+        <div class="f"><label for="ngayCap">Ngày cấp CCCD</label><div class="date"><input type="text" id="ngayCap" data-label="Ngày cấp CCCD" data-date="past" inputmode="numeric" maxlength="10" placeholder="dd/mm/yyyy"></div></div>
+      </div>
+      <div class="f"><label for="noiCap">Nơi cấp CCCD</label><input type="text" id="noiCap" data-label="Nơi cấp CCCD" list="dsNoiCap" placeholder="Chạm để chọn hoặc gõ đúng như trên thẻ">
+        <datalist id="dsNoiCap"><option value="Bộ Công an"><option value="Cục Cảnh sát quản lý hành chính về trật tự xã hội"></datalist>
       </div>
       <div class="row">
         <div class="f"><label for="sdt" class="req">Số điện thoại</label><input type="tel" id="sdt" data-label="Số điện thoại" inputmode="numeric" maxlength="10" required autocomplete="tel" placeholder="09xx xxx xxx"></div>
@@ -156,6 +174,14 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
         <div class="f"><label for="honNhan">Tình trạng hôn nhân</label><select id="honNhan" data-label="Tình trạng hôn nhân"><option value="">— Chọn —</option><option>Độc thân</option><option>Đã kết hôn</option><option>Ly hôn</option><option>Góa</option></select></div>
         <div class="f"><label for="phuThuoc">Số người phụ thuộc</label><input type="text" id="phuThuoc" data-label="Số người phụ thuộc" inputmode="numeric" maxlength="2" placeholder="Con nhỏ, bố mẹ già…"></div>
       </div>
+      <div class="row">
+        <div class="f"><label for="nhaO">Tình trạng nhà ở</label><select id="nhaO" data-label="Tình trạng nhà ở"><option value="">— Chọn —</option><option>Nhà thuộc sở hữu của mình</option><option>Ở cùng bố mẹ/gia đình</option><option>Thuê nhà</option><option>Khác</option></select></div>
+        <div class="f"><label for="coTK">Đã có tài khoản tại ngân hàng nhận hồ sơ?</label><select id="coTK" data-label="Tài khoản tại ngân hàng nhận hồ sơ"><option value="">— Chọn —</option><option>Đã có</option><option>Chưa có</option></select></div>
+      </div>
+      <div class="row">
+        <div class="f"><label for="ntTen">Người thân để liên hệ khi cần</label><input type="text" id="ntTen" data-label="Người thân liên hệ" placeholder="Họ và tên"></div>
+        <div class="f"><label for="ntQH">Quan hệ / số điện thoại</label><input type="text" id="ntQH" data-label="Quan hệ, SĐT người thân" placeholder="Ví dụ: anh trai, 0987 xxx xxx"></div>
+      </div>
       <div class="slots" data-slots="kh"><div class="slots-label">Ảnh giấy tờ</div></div>
     </fieldset>
 
@@ -165,7 +191,7 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
       <p class="sec-note">Vợ/chồng thường cùng ký hồ sơ vay và cùng là nguồn trả nợ.</p>
       <div class="f"><label for="vcTen">Họ và tên vợ/chồng</label><input type="text" id="vcTen" data-label="Họ và tên"></div>
       <div class="row">
-        <div class="f"><label for="vcNgaySinh">Ngày sinh</label><input type="date" id="vcNgaySinh" data-label="Ngày sinh"></div>
+        <div class="f"><label for="vcNgaySinh">Ngày sinh</label><div class="date"><input type="text" id="vcNgaySinh" data-label="Ngày sinh" data-date="past" inputmode="numeric" maxlength="10" placeholder="dd/mm/yyyy"></div></div>
         <div class="f"><label for="vcCccd">Số CCCD</label><input type="text" id="vcCccd" data-label="Số CCCD" inputmode="numeric" maxlength="12"></div>
       </div>
       <div class="row">
@@ -180,13 +206,22 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
     <fieldset data-title="NGHỀ NGHIỆP VÀ THU NHẬP">
       <legend><div class="sec-head"><span class="sec-no">02</span><h2 class="sec-title">Nghề nghiệp và thu nhập</h2></div></legend>
       <div class="f">
-        <span class="lbl">Nguồn thu nhập chính</span>
-        <div class="choices" role="radiogroup" aria-label="Nguồn thu nhập chính">
-          <label class="choice"><input type="radio" name="nguonTN" value="Lương" data-label="Nguồn thu nhập chính"><span>Lương</span></label>
-          <label class="choice"><input type="radio" name="nguonTN" value="Kinh doanh (hộ kinh doanh)" data-label="Nguồn thu nhập chính"><span>Kinh doanh</span></label>
-          <label class="choice"><input type="radio" name="nguonTN" value="Cho thuê tài sản" data-label="Nguồn thu nhập chính"><span>Cho thuê tài sản</span></label>
-          <label class="choice"><input type="radio" name="nguonTN" value="Khác" data-label="Nguồn thu nhập chính"><span>Khác</span></label>
+        <span class="lbl">Nguồn thu nhập <span class="hint">(chọn được nhiều nguồn)</span></span>
+        <div class="choices" role="group" aria-label="Nguồn thu nhập">
+          <label class="choice"><input type="checkbox" name="nguonTN" value="Lương" data-src="luong" data-label="Nguồn thu nhập"><span>Lương</span></label>
+          <label class="choice"><input type="checkbox" name="nguonTN" value="Kinh doanh" data-src="kd" data-label="Nguồn thu nhập"><span>Kinh doanh</span></label>
+          <label class="choice"><input type="checkbox" name="nguonTN" value="Cho thuê tài sản" data-src="thue" data-label="Nguồn thu nhập"><span>Cho thuê tài sản</span></label>
+          <label class="choice"><input type="checkbox" name="nguonTN" value="Lương hưu, trợ cấp" data-src="huu" data-label="Nguồn thu nhập"><span>Lương hưu, trợ cấp</span></label>
+          <label class="choice"><input type="checkbox" name="nguonTN" value="Khác" data-src="khac" data-label="Nguồn thu nhập"><span>Khác</span></label>
         </div>
+      </div>
+      <div class="row" id="srcAmounts">
+        <div class="f" data-src-box="luong" hidden><label for="tnLuong">Thu nhập từ lương/tháng (đồng)</label><input type="text" id="tnLuong" class="money" data-label="Thu nhập từ lương/tháng" data-money data-part inputmode="numeric"><span class="hint amt"></span></div>
+        <div class="f" data-src-box="kd" hidden><label for="tnKD">Thu nhập từ kinh doanh/tháng (đồng)</label><input type="text" id="tnKD" class="money" data-label="Thu nhập từ kinh doanh/tháng" data-money data-part inputmode="numeric"><span class="hint amt"></span><span class="hint">Doanh thu trừ chi phí.</span></div>
+        <div class="f" data-src-box="thue" hidden><label for="tnThue">Thu nhập từ cho thuê/tháng (đồng)</label><input type="text" id="tnThue" class="money" data-label="Thu nhập từ cho thuê/tháng" data-money data-part inputmode="numeric"><span class="hint amt"></span></div>
+        <div class="f" data-src-box="huu" hidden><label for="tnHuu">Lương hưu, trợ cấp/tháng (đồng)</label><input type="text" id="tnHuu" class="money" data-label="Lương hưu, trợ cấp/tháng" data-money data-part inputmode="numeric"><span class="hint amt"></span></div>
+        <div class="f" data-src-box="khac" hidden><label for="tnKhacNguon">Nguồn khác: ghi rõ</label><input type="text" id="tnKhacNguon" data-label="Nguồn thu nhập khác" placeholder="Ví dụ: cổ tức, lãi tiền gửi"></div>
+        <div class="f" data-src-box="khac" hidden><label for="tnKhac">Thu nhập từ nguồn khác/tháng (đồng)</label><input type="text" id="tnKhac" class="money" data-label="Thu nhập từ nguồn khác/tháng" data-money data-part inputmode="numeric"><span class="hint amt"></span></div>
       </div>
       <div class="row">
         <div class="f"><label for="noiLam">Nơi làm việc / tên cơ sở kinh doanh</label><input type="text" id="noiLam" data-label="Nơi làm việc / cơ sở kinh doanh"></div>
@@ -196,9 +231,8 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
         <div class="f"><label for="thamNien">Thời gian làm việc/kinh doanh</label><input type="text" id="thamNien" data-label="Thời gian làm việc/kinh doanh" placeholder="Ví dụ: 6 năm"></div>
         <div class="f"><label for="nhanLuong">Nhận lương/doanh thu qua</label><input type="text" id="nhanLuong" data-label="Nhận lương/doanh thu qua" placeholder="Tiền mặt / tài khoản ngân hàng nào"></div>
       </div>
-      <div class="f"><label for="thuNhap" class="req">Thu nhập bình quân/tháng của anh/chị (đồng)</label><input type="text" id="thuNhap" class="money" data-label="Thu nhập bình quân/tháng" data-money inputmode="numeric" required placeholder="Ví dụ: 25.000.000"><span class="hint amt"></span></div>
       <div class="row">
-        <div class="f"><label for="tnKhac">Thu nhập khác/tháng (đồng)</label><input type="text" id="tnKhac" class="money" data-label="Thu nhập khác/tháng" data-money inputmode="numeric"><span class="hint amt"></span></div>
+        <div class="f"><label for="thuNhap" class="req">Tổng thu nhập bình quân/tháng của anh/chị (đồng)</label><input type="text" id="thuNhap" class="money" data-label="Tổng thu nhập bình quân/tháng" data-money inputmode="numeric" required placeholder="Ví dụ: 25.000.000"><span class="hint amt"></span><span class="hint" id="sumHint">Tự cộng khi anh/chị nhập thu nhập từng nguồn.</span></div>
         <div class="f"><label for="chiPhi">Chi phí sinh hoạt gia đình/tháng (đồng)</label><input type="text" id="chiPhi" class="money" data-label="Chi phí sinh hoạt/tháng" data-money inputmode="numeric"><span class="hint amt"></span></div>
       </div>
       <div class="slots" data-slots="tn"><div class="slots-label">Ảnh giấy tờ</div></div>
@@ -293,7 +327,7 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
       <legend><div class="sec-head"><span class="sec-no">06</span><h2 class="sec-title">Xác nhận</h2></div></legend>
       <div class="slots" data-slots="khac"><div class="slots-label">Ảnh giấy tờ khác (nếu có)</div></div>
       <div class="f" id="fConsent">
-        <label class="consent"><input type="checkbox" id="camKet"><span>Tôi cam kết thông tin trên là đúng sự thật và đồng ý để ngân hàng tra cứu thông tin tín dụng của tôi (CIC) phục vụ việc xem xét khoản vay.</span></label>
+        <label class="consent"><input type="checkbox" id="camKet"><span>Tôi cam kết thông tin trên là đúng sự thật. Tôi đồng ý để ngân hàng tra cứu thông tin tín dụng của tôi (CIC) và xử lý dữ liệu cá nhân của tôi, gồm thông tin và ảnh giấy tờ trong phiếu này, cho mục đích xem xét, thẩm định và quản lý khoản vay.</span></label>
         <span class="err" id="errConsent" hidden>Anh/chị cần đánh dấu xác nhận để tiếp tục.</span>
       </div>
       <div class="actions"><button type="submit" class="btn primary">Tạo tin nhắn</button></div>
@@ -302,18 +336,19 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
   </form>
 
   <section id="result" hidden aria-live="polite">
-    <div class="sec-head"><span class="sec-no">→</span><h2 class="sec-title">Gửi cho cán bộ tín dụng</h2></div>
+    <div class="sec-head"><span class="sec-no">→</span><h2 class="sec-title">Gửi hồ sơ qua Zalo</h2></div>
+    <p class="banner">Mã hồ sơ của anh/chị: <b class="money" id="maBox"></b><br>Khi gửi bổ sung giấy tờ sau này, anh/chị ghi kèm mã này để cán bộ ghép đúng hồ sơ.</p>
+    <div class="recips" id="recips"></div>
     <ol class="steps" id="steps"></ol>
     <textarea id="out" readonly aria-label="Nội dung tin nhắn"></textarea>
     <div class="actions">
       <button type="button" class="btn primary" id="shareBtn" hidden>Gửi qua Zalo</button>
       <button type="button" class="btn ghost" id="copyBtn">Sao chép nội dung</button>
-      <a class="btn ghost" id="zaloBtn" href="#" target="_blank" rel="noopener" hidden>Mở Zalo của cán bộ</a>
       <button type="button" class="btn ghost" id="editBtn">Sửa lại thông tin</button>
     </div>
     <span class="toast" id="toast"></span>
   </section>
-  <p class="ver">Phiên bản 11/10/2026 – v3</p>
+  <p class="ver">Phiên bản 11/10/2026 – v6</p>
 </div>
 
 <script>
@@ -323,14 +358,28 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
   const form = $('#form');
 
   // Số Zalo cán bộ: thêm vào cuối đường link dạng #0912345678
+  // Người nhận hồ sơ: lãnh đạo PGD (cố định) + cán bộ tín dụng (số ở đuôi link #09xxxxxxxx)
+  const MANAGER = { role: 'Lãnh đạo phòng giao dịch', phone: '0904532088' };
   const rawPhone = (location.hash || '').slice(1);
-  const phone = /^0\d{9}$/.test(rawPhone) ? rawPhone : '';
-  const phoneFmt = phone.replace(/(\d{4})(\d{3})(\d{3})/, '$1 $2 $3');
-  if (phone) {
-    $('#officer').hidden = false;
-    $('#officerPhone').textContent = phoneFmt;
-    const z = $('#zaloBtn'); z.href = 'https://zalo.me/' + phone; z.hidden = false;
-  }
+  const officerPhone = /^0\d{9}$/.test(rawPhone) && rawPhone !== MANAGER.phone ? rawPhone : '';
+  const RECIPS = [MANAGER].concat(officerPhone ? [{ role: 'Cán bộ tín dụng', phone: officerPhone }] : []);
+  const fmtPhone = p => p.replace(/(\d{4})(\d{3})(\d{3})/, '$1 $2 $3');
+  RECIPS.forEach(r => {
+    const pill = document.createElement('span'); pill.className = 'officer';
+    pill.innerHTML = '<span></span><b></b>';
+    pill.firstChild.textContent = r.role + ':'; pill.lastChild.textContent = fmtPhone(r.phone);
+    $('#officerList').appendChild(pill);
+  });
+  RECIPS.forEach((r, i) => {
+    const el = document.createElement('div'); el.className = 'recip';
+    el.innerHTML = '<div><div class="recip-no"></div><div class="recip-role"></div><div class="recip-phone"></div></div><a class="btn ghost" target="_blank" rel="noopener">Mở Zalo</a>';
+    el.querySelector('.recip-no').textContent = 'Người nhận ' + (i + 1);
+    el.querySelector('.recip-role').textContent = r.role;
+    el.querySelector('.recip-phone').textContent = fmtPhone(r.phone);
+    const a = el.querySelector('a'); a.href = 'https://zalo.me/' + r.phone; a.setAttribute('aria-label', 'Mở Zalo ' + r.role + ' ' + r.phone);
+    $('#recips').appendChild(el);
+  });
+  const whoAll = RECIPS.map(r => r.role.toLowerCase() + ' <b>' + fmtPhone(r.phone) + '</b>').join(' và ');
   const inZalo = /zalo/i.test(navigator.userAgent || '');
   $('#zaloInApp').hidden = !inZalo;
 
@@ -347,6 +396,7 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
     { sec: 'khac', id: 'khacAnh', name: 'Giấy tờ khác', file: 'Khac', max: 10 }
   ];
   const store = {}; // id -> [{blob, type, ext, url}]
+  let maHS = ''; // mã hồ sơ, sinh một lần khi khách bấm "Tạo tin nhắn"
   SLOTS.forEach(s => {
     const slotsEl = $('[data-slots="' + s.sec + '"]');
     store[s.id] = [];
@@ -407,11 +457,10 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
   const slug = s => (s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D').replace(/[^A-Za-z0-9]+/g, '_').replace(/^_|_$/g, '');
   const activeSlots = () => SLOTS.filter(s => !s.el.closest('[hidden]'));
   function collectFiles() {
-    const who = slug($('#hoTen').value) || 'KH';
     const out = []; let n = 0;
     activeSlots().forEach(s => store[s.id].forEach((it, i) => {
       n++;
-      const name = String(n).padStart(2, '0') + '_' + who + '_' + s.file + (store[s.id].length > 1 ? '_' + (i + 1) : '') + '.' + it.ext;
+      const name = maHS + '_' + String(n).padStart(2, '0') + '_' + s.file + (store[s.id].length > 1 ? '_' + (i + 1) : '') + '.' + it.ext;
       out.push(new File([it.blob], name, { type: it.type }));
     }));
     return out;
@@ -438,12 +487,55 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
     const el = $('#' + id); el.addEventListener('input', () => { el.value = digits(el.value); });
   });
 
+  const isHidden = el => !!el.closest('[hidden]');
+
+  // Ô ngày: gõ dd/mm/yyyy (tự chèn "/") hoặc chọn từ lịch
+  const p2d = n => String(n).padStart(2, '0');
+  const isoToday = (() => { const t = new Date(); return t.getFullYear() + '-' + p2d(t.getMonth() + 1) + '-' + p2d(t.getDate()); })();
+  function parseDMY(s) {
+    const m = /^(\d{2})\/(\d{2})\/(\d{4})$/.exec(s || ''); if (!m) return null;
+    const d = +m[1], mo = +m[2], y = +m[3]; const dt = new Date(y, mo - 1, d);
+    return (dt.getFullYear() === y && dt.getMonth() === mo - 1 && dt.getDate() === d) ? dt : null;
+  }
+  const CAL_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/><path d="M8 14h2M14 14h2M8 17h2"/></svg>';
+  $$('[data-date]').forEach(txt => {
+    const wrap = txt.parentElement;
+    const cal = document.createElement('span'); cal.className = 'cal'; cal.innerHTML = CAL_SVG;
+    const nat = document.createElement('input'); nat.type = 'date'; nat.max = isoToday; nat.min = '1900-01-01';
+    nat.setAttribute('aria-label', 'Chọn ' + txt.dataset.label.toLowerCase() + ' từ lịch');
+    cal.appendChild(nat); wrap.appendChild(cal);
+    const syncNat = () => { const d = parseDMY(txt.value); nat.value = d ? d.getFullYear() + '-' + p2d(d.getMonth() + 1) + '-' + p2d(d.getDate()) : ''; };
+    txt.addEventListener('input', () => {
+      const d = digits(txt.value).slice(0, 8);
+      txt.value = d.slice(0, 2) + (d.length > 2 ? '/' + d.slice(2, 4) : '') + (d.length > 4 ? '/' + d.slice(4) : '');
+      syncNat();
+    });
+    nat.addEventListener('change', () => {
+      const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(nat.value);
+      if (m) { txt.value = m[3] + '/' + m[2] + '/' + m[1]; setErr(txt, ''); txt.dispatchEvent(new Event('change', { bubbles: true })); }
+    });
+    nat.addEventListener('click', () => { try { if (nat.showPicker) nat.showPicker(); } catch (e) {} });
+  });
+
   // Phần hiện/ẩn theo lựa chọn
   const toggle = () => {
     $('#secVoChong').hidden = $('#honNhan').value !== 'Đã kết hôn';
     const ts = $('#loaiTS').value; $('#tsChiTiet').hidden = !ts || ts === 'Chưa xác định';
     const dv = $('input[name=dangVay]:checked'); $('#vayChiTiet').hidden = !(dv && dv.value === 'Có');
+    const on = new Set($$('input[name=nguonTN]:checked').map(c => c.dataset.src));
+    $$('[data-src-box]').forEach(b => { b.hidden = !on.has(b.dataset.srcBox); });
+    $('#srcAmounts').hidden = on.size === 0;
+    sumIncome();
   };
+  function sumIncome() {
+    const parts = $$('[data-part]').filter(el => !isHidden(el));
+    const total = parts.reduce((t, el) => t + Number(digits(el.value) || 0), 0);
+    if (!parts.some(el => el.value)) return;
+    const tn = $('#thuNhap'); tn.value = total ? fmt(String(total)) : '';
+    tn.parentElement.querySelector('.amt').textContent = short(String(total));
+    setErr(tn, '');
+  }
+  $$('[data-part]').forEach(el => el.addEventListener('input', sumIncome));
   form.addEventListener('change', toggle); toggle();
 
   // Kiểm tra
@@ -457,6 +549,19 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
     let first = null;
     const mark = (el, msg) => { setErr(el, msg); if (msg && !first) first = el; };
     $$('[required]', form).forEach(el => mark(el, el.value.trim() ? '' : 'Mục này cần điền.'));
+    const today = new Date(); today.setHours(23, 59, 59);
+    $$('[data-date]', form).forEach(el => {
+      if (!el.value || isHidden(el)) return;
+      const d = parseDMY(el.value);
+      if (!d || d.getFullYear() < 1900) return mark(el, 'Ngày chưa đúng. Gõ theo dạng ngày/tháng/năm, ví dụ 02/05/1988.');
+      if (d > today) return mark(el, 'Ngày không được sau ngày hôm nay.');
+      if (el.dataset.date === 'birth') {
+        const a18 = new Date(d.getFullYear() + 18, d.getMonth(), d.getDate());
+        if (a18 > today) mark(el, 'Người vay phải đủ 18 tuổi.');
+      }
+    });
+    const ns = parseDMY($('#ngaySinh').value), nc = parseDMY($('#ngayCap').value);
+    if (ns && nc && nc < ns) mark($('#ngayCap'), 'Ngày cấp CCCD không thể trước ngày sinh.');
     const c = $('#cccd'); if (c.value && c.value.length !== 12) mark(c, 'Số CCCD gồm 12 chữ số.');
     const p = $('#sdt'); if (p.value && !/^0\d{9}$/.test(p.value)) mark(p, 'Số điện thoại gồm 10 chữ số, bắt đầu bằng 0.');
     const em = $('#email'); if (em.value && !/^\S+@\S+\.\S+$/.test(em.value)) mark(em, 'Email chưa đúng định dạng.');
@@ -467,19 +572,18 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
 
   // Soạn tin nhắn
   const dmy = v => { const m = /^(\d{4})-(\d{2})-(\d{2})$/.exec(v); return m ? m[3] + '/' + m[2] + '/' + m[1] : v; };
-  const isHidden = el => !!el.closest('[hidden]');
   function build() {
     const now = new Date();
     const p2 = n => String(n).padStart(2, '0');
-    const lines = ['PHIẾU THÔNG TIN VAY VỐN', 'Ngày gửi: ' + p2(now.getDate()) + '/' + p2(now.getMonth() + 1) + '/' + now.getFullYear(), ''];
+    const lines = ['PHIẾU THÔNG TIN VAY VỐN', 'Mã hồ sơ: ' + maHS, 'Ngày gửi: ' + p2(now.getDate()) + '/' + p2(now.getMonth() + 1) + '/' + now.getFullYear() + ' ' + p2(now.getHours()) + ':' + p2(now.getMinutes()), ''];
     $$('fieldset[data-title]', form).forEach(fs => {
       if (fs.hidden) return;
       const rows = []; const seen = new Set();
       $$('[data-label]', fs).forEach(el => {
         if (isHidden(el)) return;
         let v;
-        if (el.type === 'radio') { if (seen.has(el.name)) return; seen.add(el.name); const c = $('input[name="' + el.name + '"]:checked', fs); v = c ? c.value : ''; }
-        else v = el.value.trim();
+        if (el.type === 'radio' || el.type === 'checkbox') { if (seen.has(el.name)) return; seen.add(el.name); v = $$('input[name="' + el.name + '"]:checked', fs).map(c => c.value).join(', '); }
+        else v = el.value.trim().replace(/\s*\n+\s*/g, '; ');
         if (!v) return;
         if (el.type === 'date') v = dmy(v);
         if (el.hasAttribute('data-money')) v = v + ' đồng';
@@ -489,7 +593,7 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
     });
     const ph = activeSlots().filter(s => store[s.id].length).map(s => '- ' + s.name + ': ' + store[s.id].length + ' tệp');
     lines.push('ẢNH GIẤY TỜ GỬI KÈM', ...(ph.length ? ph : ['- Chưa gửi ảnh, sẽ bổ sung sau.']), '');
-    lines.push('XÁC NHẬN', 'Tôi cam kết thông tin trên là đúng sự thật và đồng ý để ngân hàng tra cứu thông tin tín dụng (CIC) phục vụ việc xem xét khoản vay.');
+    lines.push('XÁC NHẬN', '- ' + $('#camKet').nextElementSibling.textContent.trim(), '', 'Mẫu phiếu: v6');
     return lines.join('\n');
   }
 
@@ -501,7 +605,12 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
       bad.scrollIntoView({ block: 'center' }); bad.focus({ preventScroll: true }); return;
     }
     $('#errSummary').hidden = true;
+    if (!maHS) {
+      const t = new Date(), q = n => String(n).padStart(2, '0');
+      maHS = 'HS-' + String(t.getFullYear()).slice(2) + q(t.getMonth() + 1) + q(t.getDate()) + '-' + q(t.getHours()) + q(t.getMinutes()) + '-' + $('#sdt').value.slice(-3);
+    }
     $('#out').value = build();
+    $('#maBox').textContent = maHS;
     prepareSend();
     form.hidden = true; $('#result').hidden = false; $('#toast').textContent = '';
     $('#result').scrollIntoView({ block: 'start' });
@@ -515,30 +624,34 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
   function prepareSend() {
     pending = collectFiles();
     const sb = $('#shareBtn');
-    const zaloTo = phone ? 'cán bộ <b>' + phoneFmt + '</b>' : 'cán bộ đã gửi anh/chị đường link này';
+    const two = RECIPS.length > 1;
+    const each = two ? 'từng người nhận' : 'người nhận';
     let steps;
     if (pending.length && canShareFiles(pending)) {
       sb.hidden = false; sb.textContent = 'Gửi qua Zalo kèm ' + pending.length + ' tệp';
       steps = [
-        'Bấm <b>Gửi qua Zalo kèm ' + pending.length + ' tệp</b>, chọn ứng dụng <b>Zalo</b>.',
-        'Chọn cuộc trò chuyện với ' + zaloTo + ' và gửi.',
-        'Nếu Zalo chỉ nhận ảnh mà không có chữ: bấm <b>Sao chép nội dung</b>, rồi dán vào ô tin nhắn và gửi tiếp.'
+        'Bấm <b>Mở Zalo</b> ở ' + each + ' bên trên để mở cuộc trò chuyện (nhắn “Chào anh/chị” nếu chưa từng nhắn), rồi quay lại trang này.',
+        'Bấm <b>Gửi qua Zalo kèm ' + pending.length + ' tệp</b>, chọn ứng dụng <b>Zalo</b>' + (two ? ', <b>tích chọn cả 2 người nhận</b>' : ', chọn người nhận') + ' (' + whoAll + ') rồi gửi.',
+        'Nếu Zalo chỉ nhận ảnh mà không có chữ: bấm <b>Sao chép nội dung</b>, rồi dán vào cuộc trò chuyện với ' + each + '.'
       ];
     } else if (pending.length) {
       sb.hidden = true;
       steps = [
-        'Bấm <b>Sao chép nội dung</b>, mở Zalo, vào cuộc trò chuyện với ' + zaloTo + ', dán và gửi.',
-        'Trình duyệt này không gửi kèm ảnh được. Trong Zalo, bấm biểu tượng ảnh và chọn ' + pending.length + ' ảnh giấy tờ từ thư viện để gửi tiếp.' + (inZalo ? ' Hoặc mở trang bằng trình duyệt (dấu ⋯ góc phải) để gửi kèm ảnh một lần.' : '')
+        'Bấm <b>Sao chép nội dung</b>.',
+        'Bấm <b>Mở Zalo</b> ở người nhận 1, dán nội dung, gửi, rồi bấm biểu tượng ảnh trong Zalo và chọn ' + pending.length + ' ảnh giấy tờ từ thư viện để gửi.',
+        two ? 'Quay lại trang này, làm tương tự với người nhận 2.' : 'Kiểm tra đã gửi đủ chữ và ảnh.',
+        ...(inZalo ? ['Muốn gửi kèm ảnh một lần cho cả 2 người: mở trang bằng trình duyệt (dấu ⋯ góc phải) rồi điền lại.'] : [])
       ];
     } else {
       sb.hidden = true;
       steps = [
         'Bấm <b>Sao chép nội dung</b>.',
-        'Mở Zalo, vào cuộc trò chuyện với ' + zaloTo + '.',
-        'Dán vào ô tin nhắn và gửi.'
+        'Bấm <b>Mở Zalo</b> ở người nhận 1, dán vào ô tin nhắn và gửi.',
+        ...(two ? ['Quay lại trang này, bấm <b>Mở Zalo</b> ở người nhận 2, dán và gửi.'] : [])
       ];
     }
     $('#steps').innerHTML = steps.map(s => '<li>' + s + '</li>').join('');
+    const cb = $('#copyBtn'); cb.classList.toggle('primary', sb.hidden); cb.classList.toggle('ghost', !sb.hidden);
   }
   $('#shareBtn').addEventListener('click', async () => {
     try {
