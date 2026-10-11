@@ -227,14 +227,7 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
     <!-- 2 -->
     <fieldset data-title="THÔNG TIN VỢ/CHỒNG" id="secVoChong" hidden>
       <legend><div class="sec-head"><span class="sec-no">01b</span><h2 class="sec-title" id="vcTitle">Thông tin vợ/chồng</h2></div></legend>
-      <div class="f"><label for="vcCungVay" class="req">Vợ/chồng có cùng đứng tên vay (người đồng vay) không?</label>
-        <select id="vcCungVay" data-label="Vợ/chồng cùng vay" required>
-          <option value="">— Chọn —</option>
-          <option>Có – vợ chồng cùng vay</option>
-          <option>Không – chỉ một người vay</option>
-        </select>
-        <span class="hint">Vay mua nhà, đất, xây sửa nhà, mua ô tô, tiêu dùng cho gia đình… là nghĩa vụ chung của vợ chồng, nên chọn <b>Có</b>. Khi đó vợ/chồng cùng ký hồ sơ và cùng là nguồn trả nợ.</span>
-      </div>
+      <p class="banner" id="vcNote"></p>
       <div class="f"><label for="vcTen" id="vcTenLbl">Họ và tên vợ/chồng</label><input type="text" id="vcTen" data-label="Họ và tên" autocomplete="off"></div>
       <div class="row">
         <div class="f"><label for="vcNgaySinh">Ngày sinh</label><div class="date"><input type="text" id="vcNgaySinh" data-label="Ngày sinh" data-date="past" inputmode="numeric" maxlength="10" placeholder="dd/mm/yyyy"></div></div>
@@ -324,6 +317,16 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
           <option>Khác</option>
         </select>
         <span class="hint" id="mdWarn"></span>
+      </div>
+      <div class="f"><label for="vcCungVay" class="req">Người đứng tên vay</label>
+        <select id="vcCungVay" data-label="Vợ/chồng cùng vay" required>
+          <option value="">— Chọn —</option>
+          <option value="Không – chỉ một người vay">Một mình tôi vay</option>
+          <option value="Có – vợ chồng cùng vay">Vợ chồng cùng vay (có người đồng vay)</option>
+        </select>
+        <span class="hint">Vay mua nhà, đất, xây sửa nhà, mua ô tô, tiêu dùng cho gia đình… là nghĩa vụ chung của vợ chồng, nên chọn <b>Vợ chồng cùng vay</b>. Khi đó vợ/chồng cùng ký hồ sơ và cùng là nguồn trả nợ.</span>
+        <span class="hint" id="cvMsg"></span>
+        <button type="button" class="btn ghost" id="btnGoVC" hidden>Điền thông tin người đồng vay (mục 01b) ↑</button>
       </div>
       <div class="f"><label for="moTa">Mô tả cụ thể</label><textarea id="moTa" data-label="Mô tả cụ thể" placeholder="Ví dụ: mua căn hộ 75 m² tại …, giá 3,2 tỷ đồng"></textarea></div>
       <div class="row">
@@ -456,7 +459,7 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
     </div>
     <span class="toast" id="toast"></span>
   </section>
-  <p class="ver">Phiên bản 11/10/2026 – v10</p>
+  <p class="ver">Phiên bản 11/10/2026 – v11</p>
 </div>
 
 <script>
@@ -692,10 +695,11 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
 
   // Phần hiện/ẩn theo lựa chọn
   const toggle = () => {
-    const married = $('#honNhan').value === 'Đã kết hôn';
+    // Người đồng vay: chọn ở mục 03, nhập thông tin ở mục 01b
+    const md = $('#mucDich').value, joint = JOINT.includes(md), cvSel = $('#vcCungVay'), hn = $('#honNhan');
+    if (cvSel.value.startsWith('Có') && !hn.value) hn.value = 'Đã kết hôn';
+    const married = hn.value === 'Đã kết hôn';
     $('#secVoChong').hidden = !married;
-    // Người đồng vay: gợi ý theo mục đích vay chung của vợ chồng
-    const md = $('#mucDich').value, joint = JOINT.includes(md), cvSel = $('#vcCungVay');
     if (married && joint && !cvSel.value) cvSel.value = 'Có – vợ chồng cùng vay';
     const dongVay = married && cvSel.value.startsWith('Có');
     ['dongVayBox', 'dvSlots', 'dvConsent'].forEach(id => { $('#' + id).hidden = !dongVay; });
@@ -706,8 +710,15 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
     });
     const mw = $('#mdWarn');
     if (married && joint && cvSel.value.startsWith('Không')) { mw.textContent = 'Mục đích này thường là nhu cầu chung của vợ chồng. Anh/chị cân nhắc chọn vợ/chồng cùng vay ở mục 01b.'; mw.style.color = 'var(--danger)'; }
-    else if (married && dongVay) { mw.textContent = 'Vợ/chồng cùng vay theo lựa chọn ở mục 01b.'; mw.style.color = 'var(--accent)'; }
     else mw.textContent = '';
+    const cm = $('#cvMsg');
+    if (cvSel.value.startsWith('Có') && !married) { cm.textContent = 'Người đồng vay là vợ/chồng. Anh/chị kiểm tra lại tình trạng hôn nhân ở mục 01 (chọn “Đã kết hôn”).'; cm.style.color = 'var(--danger)'; }
+    else if (dongVay) { cm.textContent = 'Thông tin người đồng vay nhập ở mục 01b (phía trên).'; cm.style.color = 'var(--accent)'; }
+    else cm.textContent = '';
+    $('#btnGoVC').hidden = !dongVay;
+    $('#vcNote').innerHTML = dongVay ? '<b>Vợ chồng cùng vay:</b> điền đầy đủ thông tin người đồng vay dưới đây.'
+      : cvSel.value ? 'Một người vay: chỉ cần thông tin cơ bản của vợ/chồng.'
+      : 'Nếu vợ/chồng cùng đứng tên vay, chọn <b>“Vợ chồng cùng vay”</b> ở mục 03 (Người đứng tên vay).';
     const th = Number($('#thoiHan').value || 0);
     $('#secCuoiKy').hidden = !(th >= 1 && th <= 12);
     ckCheck();
@@ -728,6 +739,7 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
     if (cb.checked) { vt.value = $('#thuongTru').value.trim() || 'Như người vay'; vt.readOnly = true; } else vt.readOnly = false;
   }
   $('#vcCungDC').addEventListener('change', syncDC);
+  $('#btnGoVC').addEventListener('click', () => { $('#secVoChong').scrollIntoView({ block: 'start' }); const t = $('#vcTen'); t.focus({ preventScroll: true }); });
   $('#thuongTru').addEventListener('input', () => { if ($('#vcCungDC').checked) syncDC(); });
 
   // So nguồn trả nợ cuối kỳ với số tiền vay và ngày đến hạn
@@ -818,7 +830,7 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
     });
     const ph = activeSlots().filter(s => store[s.id].length).map(s => '- ' + s.name + ': ' + store[s.id].length + ' tệp');
     lines.push('ẢNH GIẤY TỜ GỬI KÈM', ...(ph.length ? ph : ['- Chưa gửi ảnh, sẽ bổ sung sau.']), '');
-    lines.push('XÁC NHẬN', '- ' + $('#camKet').nextElementSibling.textContent.trim(), '', 'Mẫu phiếu: v10');
+    lines.push('XÁC NHẬN', '- ' + $('#camKet').nextElementSibling.textContent.trim(), '', 'Mẫu phiếu: v11');
     return lines.join('\n');
   }
 
