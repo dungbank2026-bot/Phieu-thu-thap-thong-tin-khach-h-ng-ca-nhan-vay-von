@@ -95,7 +95,9 @@ details { border: 1px solid var(--line); border-radius: 10px; background: var(--
 summary { cursor: pointer; font-weight: 600; }
 details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font-size: 14px; }
 
-.slots { display: grid; gap: 12px; }
+.slots { display: grid; gap: 10px; border-top: 1px solid var(--line); padding-top: 14px; }
+.slots-label { font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
+.ver { margin: 0; font-size: 12px; color: var(--muted); text-align: center; font-family: var(--font-mono); }
 .slot { border: 1px dashed var(--line); border-radius: 8px; padding: 12px; display: grid; gap: 10px; background: var(--field); min-width: 0; }
 .slot-head { display: flex; justify-content: space-between; gap: 10px; align-items: flex-start; }
 .slot-name { font-size: 14px; font-weight: 600; }
@@ -127,7 +129,8 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
     <h1>Phiếu thông tin vay vốn</h1>
     <p class="lead">Anh/chị điền các thông tin dưới đây. Khi bấm “Tạo tin nhắn”, trang sẽ soạn sẵn nội dung để anh/chị gửi lại cho cán bộ tín dụng qua Zalo.</p>
     <span class="officer" id="officer" hidden>Cán bộ tiếp nhận: <b id="officerPhone"></b></span>
-    <p class="notice">Trang này không lưu và không tự gửi thông tin đi đâu. Nội dung chỉ đến tay cán bộ khi anh/chị tự gửi tin nhắn. Các mục có dấu <span style="color:var(--danger)">*</span> là bắt buộc.</p>
+    <p class="notice">Trang này không lưu và không tự gửi thông tin đi đâu. Nội dung và ảnh chỉ đến tay cán bộ khi anh/chị tự gửi qua Zalo. Các mục có dấu <span style="color:var(--danger)">*</span> là bắt buộc. Ảnh giấy tờ nên chụp rõ nét, đủ 4 góc, không bị lóa; có thể bỏ qua và gửi sau.</p>
+    <p class="banner" id="zaloInApp" hidden>Anh/chị đang mở trang trong Zalo. Để gửi kèm ảnh giấy tờ, bấm dấu <b>⋯</b> ở góc trên bên phải, chọn <b>Mở bằng trình duyệt</b>, rồi điền phiếu.</p>
   </header>
 
   <form id="form" novalidate>
@@ -153,6 +156,7 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
         <div class="f"><label for="honNhan">Tình trạng hôn nhân</label><select id="honNhan" data-label="Tình trạng hôn nhân"><option value="">— Chọn —</option><option>Độc thân</option><option>Đã kết hôn</option><option>Ly hôn</option><option>Góa</option></select></div>
         <div class="f"><label for="phuThuoc">Số người phụ thuộc</label><input type="text" id="phuThuoc" data-label="Số người phụ thuộc" inputmode="numeric" maxlength="2" placeholder="Con nhỏ, bố mẹ già…"></div>
       </div>
+      <div class="slots" data-slots="kh"><div class="slots-label">Ảnh giấy tờ</div></div>
     </fieldset>
 
     <!-- 2 -->
@@ -169,6 +173,7 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
         <div class="f"><label for="vcNghe">Nghề nghiệp, nơi làm việc</label><input type="text" id="vcNghe" data-label="Nghề nghiệp, nơi làm việc"></div>
       </div>
       <div class="f"><label for="vcThuNhap">Thu nhập bình quân/tháng (đồng)</label><input type="text" id="vcThuNhap" class="money" data-label="Thu nhập bình quân/tháng" data-money inputmode="numeric"><span class="hint amt"></span></div>
+      <div class="slots" data-slots="vc"><div class="slots-label">Ảnh giấy tờ</div></div>
     </fieldset>
 
     <!-- 3 -->
@@ -196,6 +201,7 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
         <div class="f"><label for="tnKhac">Thu nhập khác/tháng (đồng)</label><input type="text" id="tnKhac" class="money" data-label="Thu nhập khác/tháng" data-money inputmode="numeric"><span class="hint amt"></span></div>
         <div class="f"><label for="chiPhi">Chi phí sinh hoạt gia đình/tháng (đồng)</label><input type="text" id="chiPhi" class="money" data-label="Chi phí sinh hoạt/tháng" data-money inputmode="numeric"><span class="hint amt"></span></div>
       </div>
+      <div class="slots" data-slots="tn"><div class="slots-label">Ảnh giấy tờ</div></div>
     </fieldset>
 
     <!-- 4 -->
@@ -231,6 +237,7 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
         </div>
       </div>
       <div class="f"><label for="nguonTra">Nguồn trả nợ</label><input type="text" id="nguonTra" data-label="Nguồn trả nợ" placeholder="Ví dụ: lương của hai vợ chồng, tiền cho thuê nhà"></div>
+      <div class="slots" data-slots="md"><div class="slots-label">Ảnh giấy tờ</div></div>
     </fieldset>
 
     <!-- 5 -->
@@ -254,6 +261,7 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
         </div>
         <div class="f"><label for="diaChiTS">Địa chỉ tài sản</label><input type="text" id="diaChiTS" data-label="Địa chỉ tài sản"></div>
         <div class="f"><label for="giaTriTS">Giá trị ước tính theo anh/chị (đồng)</label><input type="text" id="giaTriTS" class="money" data-label="Giá trị ước tính" data-money inputmode="numeric"><span class="hint amt"></span><span class="hint">Giá trị chính thức do ngân hàng định giá.</span></div>
+        <div class="slots" data-slots="ts"><div class="slots-label">Ảnh giấy tờ</div></div>
       </div>
     </fieldset>
 
@@ -273,6 +281,7 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
           <div class="f"><label for="duNo">Tổng dư nợ hiện tại (đồng)</label><input type="text" id="duNo" class="money" data-label="Tổng dư nợ hiện tại" data-money inputmode="numeric"><span class="hint amt"></span></div>
           <div class="f"><label for="traThang">Số tiền đang trả hàng tháng (đồng)</label><input type="text" id="traThang" class="money" data-label="Đang trả hàng tháng" data-money inputmode="numeric"><span class="hint amt"></span></div>
         </div>
+        <div class="slots" data-slots="vay"><div class="slots-label">Ảnh giấy tờ</div></div>
       </div>
       <div class="f"><label for="quaHan">Trong 5 năm qua có khoản nào bị quá hạn không?</label>
         <select id="quaHan" data-label="Quá hạn trong 5 năm"><option value="">— Chọn —</option><option>Không</option><option>Có, đã trả xong</option><option>Có, đang xử lý</option></select>
@@ -280,15 +289,9 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
       <div class="f"><label for="ghiChu">Ghi chú thêm cho cán bộ</label><textarea id="ghiChu" data-label="Ghi chú" placeholder="Thời gian thuận tiện để liên hệ, câu hỏi về khoản vay…"></textarea></div>
     </fieldset>
 
-    <fieldset id="secAnh">
-      <legend><div class="sec-head"><span class="sec-no">06</span><h2 class="sec-title">Ảnh giấy tờ</h2></div></legend>
-      <p class="sec-note">Chụp rõ nét, đủ 4 góc, không bị lóa. Ảnh được nén ngay trên điện thoại và chỉ gửi đi khi anh/chị bấm gửi qua Zalo. Có thể bỏ qua và gửi ảnh sau.</p>
-      <p class="banner" id="zaloInApp" hidden>Anh/chị đang mở trang trong Zalo. Để gửi kèm ảnh, bấm dấu <b>⋯</b> ở góc trên bên phải, chọn <b>Mở bằng trình duyệt</b>, rồi điền tiếp.</p>
-      <div class="slots" id="slots"></div>
-    </fieldset>
-
     <fieldset>
-      <legend><div class="sec-head"><span class="sec-no">07</span><h2 class="sec-title">Xác nhận</h2></div></legend>
+      <legend><div class="sec-head"><span class="sec-no">06</span><h2 class="sec-title">Xác nhận</h2></div></legend>
+      <div class="slots" data-slots="khac"><div class="slots-label">Ảnh giấy tờ khác (nếu có)</div></div>
       <div class="f" id="fConsent">
         <label class="consent"><input type="checkbox" id="camKet"><span>Tôi cam kết thông tin trên là đúng sự thật và đồng ý để ngân hàng tra cứu thông tin tín dụng của tôi (CIC) phục vụ việc xem xét khoản vay.</span></label>
         <span class="err" id="errConsent" hidden>Anh/chị cần đánh dấu xác nhận để tiếp tục.</span>
@@ -310,6 +313,7 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
     </div>
     <span class="toast" id="toast"></span>
   </section>
+  <p class="ver">Phiên bản 11/10/2026 – v3</p>
 </div>
 
 <script>
@@ -332,18 +336,19 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
 
   // Ảnh giấy tờ
   const SLOTS = [
-    { id: 'cccdTruoc', name: 'CCCD người vay – mặt trước', file: 'CCCD_mat_truoc', max: 1, rec: true },
-    { id: 'cccdSau', name: 'CCCD người vay – mặt sau', file: 'CCCD_mat_sau', max: 1, rec: true },
-    { id: 'cccdVC', name: 'CCCD vợ/chồng – 2 mặt', file: 'CCCD_vo_chong', max: 2, when: () => $('#honNhan').value === 'Đã kết hôn' },
-    { id: 'honNhanAnh', name: 'Giấy chứng nhận kết hôn / xác nhận tình trạng hôn nhân', file: 'Hon_nhan', max: 4 },
-    { id: 'thuNhapAnh', name: 'Chứng minh thu nhập', hint: 'Hợp đồng lao động, sao kê lương 3–6 tháng, đăng ký kinh doanh, sổ doanh thu…', file: 'Thu_nhap', max: 15 },
-    { id: 'mucDichAnh', name: 'Giấy tờ về mục đích vay', hint: 'Hợp đồng mua bán/đặt cọc, dự toán xây sửa, báo giá xe…', file: 'Muc_dich', max: 15 },
-    { id: 'tsbdAnh', name: 'Giấy tờ tài sản bảo đảm', hint: 'Sổ đỏ/sổ hồng chụp đủ các trang, đăng ký xe, sổ tiết kiệm…', file: 'TSBD', max: 15, when: () => { const v = $('#loaiTS').value; return !!v && v !== 'Chưa xác định'; } },
-    { id: 'khacAnh', name: 'Giấy tờ khác', file: 'Khac', max: 10 }
+    { sec: 'kh', id: 'cccdTruoc', name: 'CCCD người vay – mặt trước', file: 'CCCD_mat_truoc', max: 1, rec: true },
+    { sec: 'kh', id: 'cccdSau', name: 'CCCD người vay – mặt sau', file: 'CCCD_mat_sau', max: 1, rec: true },
+    { sec: 'kh', id: 'honNhanAnh', name: 'Giấy chứng nhận kết hôn / xác nhận tình trạng hôn nhân', file: 'Hon_nhan', max: 4 },
+    { sec: 'vc', id: 'cccdVC', name: 'CCCD vợ/chồng – 2 mặt', file: 'CCCD_vo_chong', max: 2 },
+    { sec: 'tn', id: 'thuNhapAnh', name: 'Chứng minh thu nhập', hint: 'Hợp đồng lao động, quyết định lương, sao kê lương 3–6 tháng, đăng ký kinh doanh, sổ doanh thu…', file: 'Thu_nhap', max: 15 },
+    { sec: 'md', id: 'mucDichAnh', name: 'Giấy tờ về mục đích vay', hint: 'Hợp đồng mua bán/đặt cọc, dự toán xây sửa, báo giá xe…', file: 'Muc_dich', max: 15 },
+    { sec: 'ts', id: 'tsbdAnh', name: 'Giấy tờ tài sản bảo đảm', hint: 'Sổ đỏ/sổ hồng chụp đủ các trang, đăng ký xe, sổ tiết kiệm…', file: 'TSBD', max: 15 },
+    { sec: 'vay', id: 'vayAnh', name: 'Hợp đồng/sao kê khoản vay đang có', hint: 'Hợp đồng tín dụng, lịch trả nợ, sao kê thẻ tín dụng…', file: 'Khoan_vay_hien_tai', max: 10 },
+    { sec: 'khac', id: 'khacAnh', name: 'Giấy tờ khác', file: 'Khac', max: 10 }
   ];
   const store = {}; // id -> [{blob, type, ext, url}]
-  const slotsEl = $('#slots');
   SLOTS.forEach(s => {
+    const slotsEl = $('[data-slots="' + s.sec + '"]');
     store[s.id] = [];
     const el = document.createElement('div');
     el.className = 'slot' + (s.rec ? ' rec' : ''); el.dataset.slot = s.id;
@@ -400,7 +405,7 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
     } catch (e) { return keep(); }
   }
   const slug = s => (s || '').normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/đ/g, 'd').replace(/Đ/g, 'D').replace(/[^A-Za-z0-9]+/g, '_').replace(/^_|_$/g, '');
-  const activeSlots = () => SLOTS.filter(s => !s.when || s.when());
+  const activeSlots = () => SLOTS.filter(s => !s.el.closest('[hidden]'));
   function collectFiles() {
     const who = slug($('#hoTen').value) || 'KH';
     const out = []; let n = 0;
@@ -438,7 +443,6 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
     $('#secVoChong').hidden = $('#honNhan').value !== 'Đã kết hôn';
     const ts = $('#loaiTS').value; $('#tsChiTiet').hidden = !ts || ts === 'Chưa xác định';
     const dv = $('input[name=dangVay]:checked'); $('#vayChiTiet').hidden = !(dv && dv.value === 'Có');
-    SLOTS.forEach(s => { s.el.hidden = !!s.when && !s.when(); });
   };
   form.addEventListener('change', toggle); toggle();
 
