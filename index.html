@@ -7,42 +7,52 @@
 <style>[hidden]{display:none!important} body{margin:0} img{max-width:100%}</style>
 <title>Phiếu thông tin vay vốn</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Be+Vietnam+Pro:wght@400;500;600;700&family=Roboto+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Montserrat:wght@600;700&family=Open+Sans:wght@400;500;600;700&display=swap">
 <style>
 /* Layout: một cột hẹp kiểu tờ khai giấy, mỗi phần là một mục đánh số theo thứ tự điền; cuối trang là ô xem trước tin nhắn Zalo */
+/* Màu: bộ nhận diện Agribank (đỏ đô – vàng lúa – xanh lá), theo bảng màu tạm, chưa đối chiếu cẩm nang chính thức. Phông: Montserrat (tiêu đề) + Open Sans (nội dung) */
 :root {
-  --bg: #f3f5f2;
-  --paper: #ffffff;
-  --ink: #18221d;
-  --muted: #5b6a62;
-  --line: #d6ddd8;
-  --accent: #1d6a4b;
-  --accent-ink: #ffffff;
-  --accent-soft: #e3efe8;
-  --danger: #b3261e;
-  --field: #fbfcfb;
-  --font-body: "Be Vietnam Pro", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
-  --font-mono: "Roboto Mono", ui-monospace, Menlo, Consolas, monospace;
+  --bg: #FBF9F5;          /* nen-sang */
+  --paper: #FFFFFF;       /* khối */
+  --ink: #1C1A17;         /* chu-chinh */
+  --muted: #6E6A63;       /* chu-phu */
+  --line: #DCD6CC;        /* duong-ke */
+  --accent: #8C1D28;      /* chinh – đỏ đô: tiêu đề, nhãn, liên kết */
+  --btn: #8C1D28;         /* nền nút, lựa chọn đang chọn */
+  --accent-ink: #FBF9F5;  /* chữ trên nền đỏ đô */
+  --accent-soft: #FBF0E8; /* nền nhấn nhạt */
+  --gold: #E8B32C;        /* phu – vàng lúa: chỉ tô mảng, không làm chữ trên nền sáng */
+  --ok: #2E7D46;          /* trạng thái đạt */
+  --ok-ink: #FFFFFF;
+  --danger: #B3261E;      /* trạng thái không đạt / lỗi */
+  --field: #FDFCFA;
+  --font-head: "Montserrat", Arial, sans-serif;
+  --font-body: "Open Sans", Arial, "Segoe UI", sans-serif;
+  --font-mono: "Open Sans", Arial, sans-serif;
 }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
-    --bg: #111814; --paper: #19221d; --ink: #e5ece8; --muted: #9aaba2; --line: #2e3b34;
-    --accent: #5cc193; --accent-ink: #0d1a13; --accent-soft: #1f3329; --danger: #f2a39c; --field: #141c18;
+    --bg: #17151A; --paper: #221F24; --ink: #F2EFE9; --muted: #A8A29A; --line: #35313A;
+    --accent: #E8798A; --btn: #AD2836; --accent-ink: #FBF9F5; --accent-soft: #2C2226; --gold: #E8B32C;
+    --ok: #6FBF87; --ok-ink: #17151A; --danger: #F2A39C; --field: #1C1A1F;
     color-scheme: dark;
   }
 }
 :root[data-theme="dark"] {
-  --bg: #111814; --paper: #19221d; --ink: #e5ece8; --muted: #9aaba2; --line: #2e3b34;
-  --accent: #5cc193; --accent-ink: #0d1a13; --accent-soft: #1f3329; --danger: #f2a39c; --field: #141c18;
+  --bg: #17151A; --paper: #221F24; --ink: #F2EFE9; --muted: #A8A29A; --line: #35313A;
+  --accent: #E8798A; --btn: #AD2836; --accent-ink: #FBF9F5; --accent-soft: #2C2226; --gold: #E8B32C;
+  --ok: #6FBF87; --ok-ink: #17151A; --danger: #F2A39C; --field: #1C1A1F;
   color-scheme: dark;
 }
 * { box-sizing: border-box; }
 body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.55; }
 .wrap { max-width: 640px; margin: 0 auto; padding-inline: 16px; padding-block: 24px 64px; display: flex; flex-direction: column; gap: 20px; }
 
-header { display: flex; flex-direction: column; gap: 8px; }
-.eyebrow { font-size: 12px; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: var(--accent); }
-h1 { font-size: 26px; line-height: 1.25; margin: 0; font-weight: 700; text-wrap: balance; }
+header { display: flex; flex-direction: column; gap: 10px; }
+.brand { background: var(--btn); color: var(--accent-ink); border-radius: 10px; padding: 18px 18px 16px; border-bottom: 5px solid var(--gold); display: grid; gap: 4px; }
+.eyebrow { font-family: var(--font-head); font-size: 11.5px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--gold); }
+h1 { font-family: var(--font-head); font-size: 25px; line-height: 1.2; margin: 0; font-weight: 700; text-wrap: balance; color: var(--accent-ink); }
+h2, h3, .sec-title, .slot-name, summary, .btn { font-family: var(--font-head); }
 .lead { margin: 0; color: var(--muted); max-width: 60ch; }
 .officer-list { display: flex; flex-wrap: wrap; gap: 8px; }
 .officer-list:empty { display: none; }
@@ -60,8 +70,8 @@ form { display: flex; flex-direction: column; gap: 16px; }
 fieldset { margin: 0; border: 1px solid var(--line); background: var(--paper); border-radius: 10px; padding: 18px 16px 20px; display: grid; gap: 14px; min-width: 0; }
 legend { display: contents; }
 .sec-head { display: flex; gap: 12px; align-items: baseline; }
-.sec-no { font-family: var(--font-mono); font-size: 13px; color: var(--accent); font-weight: 500; }
-.sec-title { font-size: 17px; font-weight: 600; margin: 0; }
+.sec-no { font-family: var(--font-head); font-size: 13px; color: var(--accent); font-weight: 500; }
+.sec-title { font-size: 16.5px; font-weight: 700; margin: 0; color: var(--accent); }
 .sec-note { font-size: 13px; color: var(--muted); margin: -6px 0 0; }
 
 .row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
@@ -87,14 +97,14 @@ input:focus-visible, select:focus-visible, textarea:focus-visible, button:focus-
 .choice { position: relative; }
 .choice input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
 .choice span { display: inline-block; padding: 8px 14px; border: 1px solid var(--line); border-radius: 999px; font-size: 14px; background: var(--field); }
-.choice input:checked + span { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.choice input:checked + span { background: var(--btn); border-color: var(--btn); color: var(--accent-ink); }
 .choice input:focus-visible + span { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 .consent { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; }
 .consent input { width: 20px; height: 20px; margin-top: 2px; accent-color: var(--accent); flex: none; }
 
 .btn { font: inherit; font-weight: 600; border-radius: 8px; padding: 12px 18px; min-height: 48px; cursor: pointer; border: 1px solid var(--accent); text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
-.btn.primary { background: var(--accent); color: var(--accent-ink); }
+.btn.primary { background: var(--btn); border-color: var(--btn); color: var(--accent-ink); }
 .btn.ghost { background: transparent; color: var(--accent); }
 .actions { display: flex; flex-wrap: wrap; gap: 10px; }
 .actions .btn { flex: 1 1 200px; }
@@ -117,7 +127,7 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
 .map-actions .btn { min-height: 42px; padding: 8px 14px; font-size: 14px; flex: 1 1 160px; }
 .map-frame { position: relative; width: 100%; max-width: 100%; aspect-ratio: 4 / 3; border-radius: 8px; overflow: hidden; border: 1px solid var(--line); background: var(--paper); }
 .map-frame iframe { position: absolute; inset: 0; width: 100%; height: 100%; border: 0; }
-.map-msg-ok { color: var(--accent); font-weight: 500; }
+.map-msg-ok { color: var(--ok); font-weight: 500; }
 .map-msg-bad { color: var(--danger); }
 .guide { border: 1px solid var(--line); background: var(--paper); border-radius: 10px; padding: 12px 14px; }
 .guide summary { cursor: pointer; font-weight: 600; color: var(--accent); font-size: 14.5px; }
@@ -126,6 +136,11 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
 .guide-body ol, .guide-body ul { margin: 0; padding-left: 20px; display: grid; gap: 6px; }
 .guide-body p { margin: 0; }
 .scan-link { font-size: 12.5px; color: var(--accent); justify-self: start; }
+.hp { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+.mail { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: space-between; border-radius: 8px; padding: 12px 14px; font-size: 14px; background: var(--accent-soft); }
+.mail.bad { background: var(--field); border: 1px solid var(--danger); color: var(--danger); }
+.mail.wait { background: var(--field); border: 1px dashed var(--line); color: var(--muted); }
+.mail .btn { min-height: 40px; padding: 8px 14px; }
 .dv-box { display: grid; gap: 14px; border-top: 1px solid var(--line); padding-top: 14px; }
 .ver { margin: 0; font-size: 12px; color: var(--muted); text-align: center; font-family: var(--font-mono); }
 .slot { border: 1px dashed var(--line); border-radius: 8px; padding: 12px; display: grid; gap: 10px; background: var(--field); min-width: 0; }
@@ -133,7 +148,7 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
 .slot-name { font-size: 14px; font-weight: 600; }
 .slot-hint { font-size: 12.5px; color: var(--muted); }
 .slot-count { font-family: var(--font-mono); font-size: 12px; padding: 2px 8px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); white-space: nowrap; flex: none; }
-.slot.has .slot-count { background: var(--accent); border-color: var(--accent); color: var(--accent-ink); }
+.slot.has .slot-count { background: var(--ok); border-color: var(--ok); color: var(--ok-ink); }
 .slot.rec:not(.has) .slot-count { border-color: var(--danger); color: var(--danger); }
 .thumbs { display: grid; grid-template-columns: repeat(auto-fill, minmax(76px, 1fr)); gap: 8px; }
 .thumbs:empty { display: none; }
@@ -155,11 +170,13 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
 <body>
 <div class="wrap">
   <header>
-    <span class="eyebrow">Khách hàng cá nhân</span>
-    <h1>Phiếu thông tin vay vốn</h1>
-    <p class="lead">Anh/chị điền các thông tin dưới đây. Khi bấm “Tạo tin nhắn”, trang sẽ soạn sẵn nội dung để anh/chị gửi lại cho cán bộ tín dụng qua Zalo.</p>
+    <div class="brand">
+      <span class="eyebrow">Khách hàng cá nhân</span>
+      <h1>Phiếu thông tin vay vốn</h1>
+    </div>
+    <p class="lead">Anh/chị điền các mục dưới đây, chụp ảnh giấy tờ ở từng mục, rồi bấm nút gửi ở cuối trang.</p>
     <div class="officer-list" id="officerList"></div>
-    <p class="notice">Trang này không lưu và không tự gửi thông tin đi đâu. Nội dung và ảnh chỉ đến tay cán bộ khi anh/chị tự gửi qua Zalo. Các mục có dấu <span style="color:var(--danger)">*</span> là bắt buộc. Ảnh giấy tờ nên chụp rõ nét, đủ 4 góc, không bị lóa; có thể bỏ qua và gửi sau.</p>
+    <p class="notice" id="privNote">Trang này không lưu lại dữ liệu. Khi anh/chị bấm <b>Gửi hồ sơ</b>, thông tin và ảnh được gửi đến hộp thư tiếp nhận hồ sơ của cán bộ ngân hàng; anh/chị cũng có thể gửi thêm qua Zalo. Các mục có dấu <span style="color:var(--danger)">*</span> là bắt buộc. Ảnh giấy tờ nên chụp rõ nét, đủ 4 góc, không bị lóa; có thể bỏ qua và gửi sau.</p>
     <details class="guide" id="huongDanScan">
       <summary>Hướng dẫn chụp ảnh giấy tờ rõ nét bằng tính năng Scan của Zalo</summary>
       <div class="guide-body">
@@ -188,6 +205,7 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
   </header>
 
   <form id="form" novalidate>
+    <div class="hp" aria-hidden="true"><label for="hpWeb">Website</label><input type="text" id="hpWeb" tabindex="-1" autocomplete="off"></div>
     <!-- 1 -->
     <fieldset data-title="THÔNG TIN KHÁCH HÀNG">
       <legend><div class="sec-head"><span class="sec-no">01</span><h2 class="sec-title">Thông tin khách hàng</h2></div></legend>
@@ -441,13 +459,14 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
         <label class="consent"><input type="checkbox" id="camKet"><span>Tôi cam kết thông tin trên là đúng sự thật. Tôi đồng ý để ngân hàng tra cứu thông tin tín dụng của tôi (CIC) và xử lý dữ liệu cá nhân của tôi, gồm thông tin và ảnh giấy tờ trong phiếu này, cho mục đích xem xét, thẩm định và quản lý khoản vay.</span></label>
         <span class="err" id="errConsent" hidden>Anh/chị cần đánh dấu xác nhận để tiếp tục.</span>
       </div>
-      <div class="actions"><button type="submit" class="btn primary">Tạo tin nhắn</button></div>
+      <div class="actions"><button type="submit" class="btn primary" id="btnSubmit">Gửi hồ sơ</button></div>
       <span class="err" id="errSummary" hidden></span>
     </fieldset>
   </form>
 
   <section id="result" hidden aria-live="polite">
     <div class="sec-head"><span class="sec-no">→</span><h2 class="sec-title">Gửi hồ sơ qua Zalo</h2></div>
+    <div class="mail" id="mailBox" hidden><span id="mailMsg"></span><button type="button" class="btn ghost" id="btnResend" hidden>Gửi lại hồ sơ</button></div>
     <p class="banner">Mã hồ sơ của anh/chị: <b class="money" id="maBox"></b><br>Khi gửi bổ sung giấy tờ sau này, anh/chị ghi kèm mã này để cán bộ ghép đúng hồ sơ.</p>
     <div class="recips" id="recips"></div>
     <ol class="steps" id="steps"></ol>
@@ -459,11 +478,15 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
     </div>
     <span class="toast" id="toast"></span>
   </section>
-  <p class="ver">Phiên bản 11/10/2026 – v11</p>
+  <p class="ver">Phiên bản 14/10/2026 – v13</p>
 </div>
 
 <script>
 (function () {
+  // ===== THIẾT LẬP GỬI EMAIL =====
+  // Dán link Web app của Google Apps Script vào giữa hai dấu nháy. Để trống thì phiếu chỉ gửi qua Zalo.
+  const GUI_EMAIL_URL = '';
+
   const $ = (s, r = document) => r.querySelector(s);
   const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
   const form = $('#form');
@@ -747,7 +770,7 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
     const loan = Number(digits($('#soTien').value) || 0), val = Number(digits($('#ckGiaTri').value) || 0), th = Number($('#thoiHan').value || 0);
     const vm = $('#ckValMsg');
     if (loan && val && val < loan) { vm.textContent = 'Thấp hơn số tiền đề nghị vay ' + fmt(String(loan - val)) + ' đ. Anh/chị ghi rõ phần còn lại trả bằng nguồn nào ở ô mô tả.'; vm.style.color = 'var(--danger)'; }
-    else if (loan && val) { vm.textContent = 'Đủ để trả số tiền đề nghị vay.'; vm.style.color = 'var(--accent)'; }
+    else if (loan && val) { vm.textContent = 'Đủ để trả số tiền đề nghị vay.'; vm.style.color = 'var(--ok)'; }
     else vm.textContent = '';
     const dm = $('#ckDateMsg'), cd = parseDMY($('#ckNgay').value);
     if (cd && th) {
@@ -755,7 +778,7 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
       const late = Math.round((cd - due) / 86400000);
       dm.textContent = late > 0 ? 'Sau ngày đến hạn dự kiến (' + p2d(due.getDate()) + '/' + p2d(due.getMonth() + 1) + '/' + due.getFullYear() + ') ' + late + ' ngày. Cân nhắc chọn thời hạn vay dài hơn.'
         : 'Trước ngày đến hạn dự kiến ' + p2d(due.getDate()) + '/' + p2d(due.getMonth() + 1) + '/' + due.getFullYear() + '.';
-      dm.style.color = late > 0 ? 'var(--danger)' : 'var(--accent)';
+      dm.style.color = late > 0 ? 'var(--danger)' : 'var(--ok)';
     } else dm.textContent = '';
   }
   ['soTien', 'ckGiaTri', 'ckNgay', 'thoiHan'].forEach(id => $('#' + id).addEventListener('input', ckCheck));
@@ -830,7 +853,7 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
     });
     const ph = activeSlots().filter(s => store[s.id].length).map(s => '- ' + s.name + ': ' + store[s.id].length + ' tệp');
     lines.push('ẢNH GIẤY TỜ GỬI KÈM', ...(ph.length ? ph : ['- Chưa gửi ảnh, sẽ bổ sung sau.']), '');
-    lines.push('XÁC NHẬN', '- ' + $('#camKet').nextElementSibling.textContent.trim(), '', 'Mẫu phiếu: v11');
+    lines.push('XÁC NHẬN', '- ' + $('#camKet').nextElementSibling.textContent.trim(), '', 'Mẫu phiếu: v13');
     return lines.join('\n');
   }
 
@@ -849,6 +872,7 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
     $('#out').value = build();
     $('#maBox').textContent = maHS;
     prepareSend();
+    sendEmail();
     form.hidden = true; $('#result').hidden = false; $('#toast').textContent = '';
     $('#result').scrollIntoView({ block: 'start' });
   });
@@ -907,6 +931,39 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
       navigator.clipboard.writeText(t.value).then(() => { $('#toast').textContent = 'Đã sao chép. Mở Zalo và dán vào ô tin nhắn.'; }, fallback);
     } catch (err) { fallback(); }
   });
+  // ---- Gửi hồ sơ về email (Google Apps Script) ----
+  let sentCount = 0, sending = false;
+  if (!GUI_EMAIL_URL) { $('#btnSubmit').textContent = 'Tạo tin nhắn'; $('#privNote').innerHTML = $('#privNote').innerHTML.replace(/Khi anh\/chị bấm.*?qua Zalo\./, 'Nội dung và ảnh chỉ đến tay cán bộ khi anh/chị tự gửi qua Zalo.'); }
+  const blobToB64 = b => new Promise((res, rej) => { const r = new FileReader(); r.onload = () => res(String(r.result).split(',')[1] || ''); r.onerror = rej; r.readAsDataURL(b); });
+  function mailState(cls, html, retry) {
+    const box = $('#mailBox'); box.hidden = false; box.className = 'mail' + (cls ? ' ' + cls : '');
+    $('#mailMsg').innerHTML = html; $('#btnResend').hidden = !retry;
+  }
+  async function sendEmail() {
+    if (!GUI_EMAIL_URL || sending) return;
+    sending = true;
+    mailState('wait', 'Đang gửi hồ sơ đến hộp thư tiếp nhận của ngân hàng… Anh/chị giữ trang này mở đến khi có thông báo.', false);
+    try {
+      const files = collectFiles(), LIMIT = 18 * 1024 * 1024, att = []; let total = 0, skipped = 0;
+      for (const f of files) {
+        if (total + f.size > LIMIT) { skipped++; continue; }
+        total += f.size; att.push({ name: f.name, type: f.type || 'application/octet-stream', b64: await blobToB64(f) });
+      }
+      const text = $('#out').value + (skipped ? '\n\n(Còn ' + skipped + ' tệp chưa gửi kèm email do vượt dung lượng; khách gửi qua Zalo.)' : '');
+      const payload = { ma: maHS, ten: $('#hoTen').value.trim(), sdt: $('#sdt').value, text, files: att, update: sentCount > 0, hp: $('#hpWeb').value };
+      const resp = await fetch(GUI_EMAIL_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) });
+      let j = {}; try { j = await resp.json(); } catch (e) { j = { ok: resp.ok }; }
+      if (!j.ok) throw new Error(j.error || 'Máy chủ không nhận hồ sơ');
+      sentCount++;
+      const t = new Date(), q = n => String(n).padStart(2, '0');
+      mailState('', '<b>Đã gửi hồ sơ' + (sentCount > 1 ? ' (bản cập nhật)' : '') + '</b> đến hộp thư tiếp nhận lúc ' + q(t.getHours()) + ':' + q(t.getMinutes())
+        + (att.length ? ', kèm ' + att.length + ' tệp' : '') + '.' + (skipped ? ' Còn ' + skipped + ' tệp quá dung lượng, anh/chị gửi thêm qua Zalo.' : ' Anh/chị có thể gửi thêm qua Zalo bên dưới để cán bộ nhận nhanh hơn.'), false);
+    } catch (err) {
+      mailState('bad', '<b>Chưa gửi được hồ sơ qua email</b> (' + String(err && err.message || err).slice(0, 120) + '). Anh/chị bấm “Gửi lại hồ sơ”, hoặc gửi qua Zalo theo các bước bên dưới.', true);
+    } finally { sending = false; }
+  }
+  $('#btnResend').addEventListener('click', sendEmail);
+
   $('#editBtn').addEventListener('click', () => { $('#result').hidden = true; form.hidden = false; form.scrollIntoView({ block: 'start' }); });
 })();
 </script>
