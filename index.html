@@ -478,7 +478,7 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
     </div>
     <span class="toast" id="toast"></span>
   </section>
-  <p class="ver">Phiên bản 14/10/2026 – v13</p>
+  <p class="ver">Phiên bản 15/10/2026 – v14</p>
 </div>
 
 <script>
@@ -497,6 +497,9 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
   const rawPhone = (location.hash || '').slice(1);
   const officerPhone = /^0\d{9}$/.test(rawPhone) && rawPhone !== MANAGER.phone ? rawPhone : '';
   const RECIPS = [MANAGER].concat(officerPhone ? [{ role: 'Cán bộ tín dụng', phone: officerPhone }] : []);
+  // Kênh tiếp cận: ấn phẩm in thêm ?nguon=... vào link mã QR (chỉ nhận các giá trị trong danh sách)
+  const NGUON = { 'standee': 'Quét QR standee tại PGD', 'backdrop': 'Quét QR backdrop sự kiện', 'ban-qr': 'Quét QR biển để bàn tại quầy' };
+  const nguonKey = (() => { try { const v = new URLSearchParams(location.search).get('nguon') || ''; return Object.prototype.hasOwnProperty.call(NGUON, v) ? v : ''; } catch (e) { return ''; } })();
   const fmtPhone = p => p.replace(/(\d{4})(\d{3})(\d{3})/, '$1 $2 $3');
   RECIPS.forEach(r => {
     const pill = document.createElement('span'); pill.className = 'officer';
@@ -835,7 +838,9 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
   function build() {
     const now = new Date();
     const p2 = n => String(n).padStart(2, '0');
-    const lines = ['PHIẾU THÔNG TIN VAY VỐN', 'Mã hồ sơ: ' + maHS, 'Ngày gửi: ' + p2(now.getDate()) + '/' + p2(now.getMonth() + 1) + '/' + now.getFullYear() + ' ' + p2(now.getHours()) + ':' + p2(now.getMinutes()), ''];
+    const lines = ['PHIẾU THÔNG TIN VAY VỐN', 'Mã hồ sơ: ' + maHS, 'Ngày gửi: ' + p2(now.getDate()) + '/' + p2(now.getMonth() + 1) + '/' + now.getFullYear() + ' ' + p2(now.getHours()) + ':' + p2(now.getMinutes())];
+    if (nguonKey) lines.push('Kênh tiếp cận: ' + NGUON[nguonKey]);
+    lines.push('');
     $$('fieldset[data-title]', form).forEach(fs => {
       if (fs.hidden) return;
       const rows = []; const seen = new Set();
@@ -853,7 +858,7 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
     });
     const ph = activeSlots().filter(s => store[s.id].length).map(s => '- ' + s.name + ': ' + store[s.id].length + ' tệp');
     lines.push('ẢNH GIẤY TỜ GỬI KÈM', ...(ph.length ? ph : ['- Chưa gửi ảnh, sẽ bổ sung sau.']), '');
-    lines.push('XÁC NHẬN', '- ' + $('#camKet').nextElementSibling.textContent.trim(), '', 'Mẫu phiếu: v13');
+    lines.push('XÁC NHẬN', '- ' + $('#camKet').nextElementSibling.textContent.trim(), '', 'Mẫu phiếu: v14');
     return lines.join('\n');
   }
 
@@ -951,6 +956,7 @@ details ul { margin: 10px 0 0; padding-left: 20px; display: grid; gap: 4px; font
       }
       const text = $('#out').value + (skipped ? '\n\n(Còn ' + skipped + ' tệp chưa gửi kèm email do vượt dung lượng; khách gửi qua Zalo.)' : '');
       const payload = { ma: maHS, ten: $('#hoTen').value.trim(), sdt: $('#sdt').value, text, files: att, update: sentCount > 0, hp: $('#hpWeb').value };
+      if (nguonKey) payload.nguon = nguonKey;
       const resp = await fetch(GUI_EMAIL_URL, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) });
       let j = {}; try { j = await resp.json(); } catch (e) { j = { ok: resp.ok }; }
       if (!j.ok) throw new Error(j.error || 'Máy chủ không nhận hồ sơ');

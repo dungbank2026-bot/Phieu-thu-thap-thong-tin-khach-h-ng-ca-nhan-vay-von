@@ -1,0 +1,567 @@
+<!doctype html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Ấn phẩm mã QR</title>
+<style>
+/* Phông chữ đóng gói sẵn trong thư mục fonts/ (không phụ thuộc mạng). Giấy phép SIL OFL 1.1: fonts/OFL-*.txt */
+/* Dải unicode lấy theo gói @fontsource-variable (vietnamese, latin-ext, latin) */
+@font-face { font-family: "Montserrat"; font-style: normal; font-display: block; font-weight: 100 900;
+  src: url(fonts/montserrat-vietnamese-wght-normal.woff2) format("woff2-variations"), url(fonts/montserrat-vietnamese-wght-normal.woff2) format("woff2");
+  unicode-range: U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB; }
+@font-face { font-family: "Montserrat"; font-style: normal; font-display: block; font-weight: 100 900;
+  src: url(fonts/montserrat-latin-ext-wght-normal.woff2) format("woff2-variations"), url(fonts/montserrat-latin-ext-wght-normal.woff2) format("woff2");
+  unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF; }
+@font-face { font-family: "Montserrat"; font-style: normal; font-display: block; font-weight: 100 900;
+  src: url(fonts/montserrat-latin-wght-normal.woff2) format("woff2-variations"), url(fonts/montserrat-latin-wght-normal.woff2) format("woff2");
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+@font-face { font-family: "Open Sans"; font-style: normal; font-display: block; font-weight: 300 800;
+  src: url(fonts/open-sans-vietnamese-wght-normal.woff2) format("woff2-variations"), url(fonts/open-sans-vietnamese-wght-normal.woff2) format("woff2");
+  unicode-range: U+0102-0103,U+0110-0111,U+0128-0129,U+0168-0169,U+01A0-01A1,U+01AF-01B0,U+0300-0301,U+0303-0304,U+0308-0309,U+0323,U+0329,U+1EA0-1EF9,U+20AB; }
+@font-face { font-family: "Open Sans"; font-style: normal; font-display: block; font-weight: 300 800;
+  src: url(fonts/open-sans-latin-ext-wght-normal.woff2) format("woff2-variations"), url(fonts/open-sans-latin-ext-wght-normal.woff2) format("woff2");
+  unicode-range: U+0100-02BA,U+02BD-02C5,U+02C7-02CC,U+02CE-02D7,U+02DD-02FF,U+0304,U+0308,U+0329,U+1D00-1DBF,U+1E00-1E9F,U+1EF2-1EFF,U+2020,U+20A0-20AB,U+20AD-20C0,U+2113,U+2C60-2C7F,U+A720-A7FF; }
+@font-face { font-family: "Open Sans"; font-style: normal; font-display: block; font-weight: 300 800;
+  src: url(fonts/open-sans-latin-wght-normal.woff2) format("woff2-variations"), url(fonts/open-sans-latin-wght-normal.woff2) format("woff2");
+  unicode-range: U+0000-00FF,U+0131,U+0152-0153,U+02BB-02BC,U+02C6,U+02DA,U+02DC,U+0304,U+0308,U+0329,U+2000-206F,U+20AC,U+2122,U+2191,U+2193,U+2212,U+2215,U+FEFF,U+FFFD; }
+
+/* ===== Giao diện trình tạo (theo token của phiếu vay, có chế độ tối) ===== */
+:root {
+  --bg: #FBF9F5;          /* nen-sang */
+  --paper: #FFFFFF;
+  --ink: #1C1A17;         /* chu-chinh */
+  --muted: #6E6A63;       /* chu-phu */
+  --line: #DCD6CC;        /* duong-ke */
+  --accent: #8C1D28;      /* chinh */
+  --btn: #8C1D28;
+  --accent-ink: #FBF9F5;
+  --accent-soft: #FBF0E8;
+  --gold: #E8B32C;        /* phu – chỉ tô mảng hoặc chữ trên nền tối */
+  --danger: #B3261E;
+  --field: #FDFCFA;
+  --stage: #F0EBE3;       /* nen-phu: nền khu xem trước */
+  --font-head: "Montserrat", Arial, sans-serif;
+  --font-body: "Open Sans", Arial, "Segoe UI", sans-serif;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #17151A; --paper: #221F24; --ink: #F2EFE9; --muted: #A8A29A; --line: #35313A;
+    --accent: #E8798A; --btn: #AD2836; --accent-ink: #FBF9F5; --accent-soft: #2C2226; --gold: #E8B32C;
+    --danger: #F2A39C; --field: #1C1A1F; --stage: #0F0E11;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #17151A; --paper: #221F24; --ink: #F2EFE9; --muted: #A8A29A; --line: #35313A;
+  --accent: #E8798A; --btn: #AD2836; --accent-ink: #FBF9F5; --accent-soft: #2C2226; --gold: #E8B32C;
+  --danger: #F2A39C; --field: #1C1A1F; --stage: #0F0E11;
+  color-scheme: dark;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; }
+body { background: var(--bg); color: var(--ink); font-family: var(--font-body); font-size: 15px; line-height: 1.55; }
+[hidden] { display: none !important; }
+.ui-wrap { max-width: 1280px; margin: 0 auto; padding: 20px 16px 48px; display: grid; gap: 18px; }
+.brand { background: var(--btn); color: var(--accent-ink); border-radius: 10px; padding: 16px 18px 14px; border-bottom: 5px solid var(--gold); display: grid; gap: 4px; }
+.eyebrow { font-family: var(--font-head); font-size: 11.5px; font-weight: 600; letter-spacing: .1em; text-transform: uppercase; color: var(--gold); }
+.brand h1 { font-family: var(--font-head); font-size: 23px; line-height: 1.2; margin: 0; font-weight: 700; }
+.lead { margin: 0; color: var(--muted); max-width: 75ch; }
+.app { display: grid; grid-template-columns: minmax(280px, 380px) minmax(0, 1fr); gap: 18px; align-items: start; }
+@media (max-width: 900px) { .app { grid-template-columns: 1fr; } }
+.panel { border: 1px solid var(--line); background: var(--paper); border-radius: 10px; padding: 16px; display: grid; gap: 14px; min-width: 0; }
+.panel h2 { font-family: var(--font-head); font-size: 15px; margin: 0; color: var(--accent); }
+.f { display: flex; flex-direction: column; gap: 5px; min-width: 0; }
+.f label, .lbl { font-size: 13.5px; font-weight: 500; }
+.hint { font-size: 12.5px; color: var(--muted); }
+.err { font-size: 12.5px; color: var(--danger); }
+input[type=text], input[type=tel], input[type=url], select {
+  font: inherit; color: var(--ink); background: var(--field); border: 1px solid var(--line); border-radius: 7px;
+  padding: 9px 12px; width: 100%; min-height: 42px;
+}
+.f.bad input { border-color: var(--danger); }
+input:focus-visible, select:focus-visible, button:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 420px) { .row { grid-template-columns: 1fr; } }
+.check { display: flex; gap: 10px; align-items: flex-start; font-size: 14px; }
+.check input { width: 20px; height: 20px; margin-top: 2px; accent-color: var(--accent); flex: none; }
+.btn { font: inherit; font-family: var(--font-head); font-weight: 600; font-size: 14px; border-radius: 8px; padding: 10px 16px; min-height: 44px; cursor: pointer; border: 1px solid var(--accent); text-decoration: none; display: inline-flex; align-items: center; justify-content: center; gap: 8px; }
+.btn.primary { background: var(--btn); border-color: var(--btn); color: var(--accent-ink); }
+.btn.ghost { background: transparent; color: var(--accent); }
+.actions { display: flex; flex-wrap: wrap; gap: 10px; }
+.actions .btn { flex: 1 1 150px; }
+.toast { font-size: 13.5px; color: var(--accent); font-weight: 600; min-height: 1.2em; }
+.qrlink { font-size: 12.5px; color: var(--muted); overflow-wrap: anywhere; background: var(--field); border: 1px dashed var(--line); border-radius: 7px; padding: 8px 10px; }
+.qrlink b { color: var(--ink); font-weight: 600; }
+.view { display: grid; gap: 10px; min-width: 0; }
+@media (min-width: 901px) { .view { position: sticky; top: 12px; } }
+.view-head { display: flex; flex-wrap: wrap; gap: 8px 16px; align-items: baseline; justify-content: space-between; }
+.view-head h2 { font-family: var(--font-head); font-size: 15px; margin: 0; color: var(--accent); }
+.stage { background: var(--stage); border: 1px solid var(--line); border-radius: 10px; padding: 16px; display: flex; justify-content: center; align-items: flex-start; overflow: hidden; min-height: 240px; }
+.scaler { position: relative; flex: none; }
+.scaler > .sheet { position: absolute; left: 0; top: 0; transform-origin: 0 0; }
+
+/* ===== Ấn phẩm in (màu cố định, không đổi theo chế độ tối) ===== */
+.sheet {
+  --chinh: #8C1D28; --chinh-dam: #6B1520; --phu: #E8B32C; --phu-dam: #8A6410; --xanh: #2E7D46;
+  --nen-sang: #FBF9F5; --nen-phu: #F0EBE3; --chu-chinh: #1C1A17; --chu-phu: #6E6A63; --duong-ke: #DCD6CC;
+  --trang: #FFFFFF;
+  position: relative; overflow: hidden; background: var(--nen-sang); color: var(--chu-chinh);
+  font-family: "Open Sans", Arial, sans-serif; line-height: 1.35;
+  -webkit-print-color-adjust: exact; print-color-adjust: exact;
+}
+.trim { position: absolute; container-type: size; }
+.trim[data-layout="tall"], .trim[data-layout="card"] { --u: 1cqw; }
+.trim[data-layout="wide"] { --u: 1cqh; }
+.ct { position: absolute; inset: 0; display: flex; flex-direction: column; padding: var(--pt) var(--px) var(--pb); }
+.hd { font-family: "Montserrat", Arial, sans-serif; }
+
+/* Ô logo: chỉ nạp file logo gốc logo.png / logo.svg, không tự vẽ logo */
+.logo-slot { background: var(--trang); border-radius: calc(var(--u) * 1.2); display: flex; align-items: center; justify-content: center; overflow: hidden; flex: none; }
+.logo-slot img { max-width: 100%; max-height: 100%; object-fit: contain; display: block; }
+.logo-slot.empty { border: calc(var(--u) * .35) dashed var(--chu-phu); }
+.logo-ph { color: var(--chu-phu); font-weight: 600; text-align: center; line-height: 1.25; padding: 0 6%; }
+
+.eyb { font-weight: 700; letter-spacing: .14em; text-transform: uppercase; color: var(--phu); }
+.h1 { font-weight: 800; color: var(--nen-sang); line-height: 1.08; margin: 0; letter-spacing: -.01em; }
+.h1-sub { font-weight: 700; color: var(--phu); line-height: 1.15; margin: 0; text-wrap: balance; }
+
+.qr-card { background: var(--trang); border: calc(var(--u) * .5) solid var(--chinh); display: flex; flex-direction: column; align-items: center; position: relative; }
+.qr-tab { background: var(--chinh); color: var(--nen-sang); font-weight: 700; text-align: center; white-space: nowrap; }
+.qr-box svg { display: block; width: 100%; height: 100%; }
+.qr-cap { color: var(--chu-chinh); font-weight: 600; text-align: center; }
+.qr-url { color: var(--chu-phu); text-align: center; overflow-wrap: anywhere; line-height: 1.3; }
+
+.steps { display: grid; }
+.step { display: grid; grid-template-columns: auto 1fr; align-items: center; }
+.step-no { border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 800; flex: none; }
+.step-t { font-weight: 700; line-height: 1.2; }
+.step-s { line-height: 1.3; }
+.chips-l { font-weight: 700; letter-spacing: .12em; text-transform: uppercase; }
+.chips { display: flex; flex-wrap: wrap; }
+.chip { font-weight: 600; white-space: nowrap; }
+
+.foot { color: var(--nen-sang); }
+.hot-l { font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--phu); }
+.hot-n { font-weight: 800; color: var(--nen-sang); white-space: nowrap; font-variant-numeric: tabular-nums; line-height: 1.1; }
+.pgd { font-weight: 700; line-height: 1.2; }
+.addr, .cb { color: var(--nen-phu); }
+
+/* --- Bố cục đứng cao: standee 60×160, 80×200 --- */
+.trim[data-layout="tall"] { --pt: calc(var(--u) * 7); --px: calc(var(--u) * 7); --pb: calc(var(--u) * 8); }
+/* Standee 80×200 thấp hơn tương đối (tỷ lệ 2,5 so với 2,67) nên thu cả bố cục theo tỷ lệ 2,5 / 2,667 */
+.trim[data-kho="standee80"] { --u: 0.9375cqw; }
+[data-layout="tall"] .hero { background: var(--chinh); margin: calc(-1 * (var(--pt) + var(--b))) calc(-1 * (var(--px) + var(--b))) 0; padding: calc(var(--pt) + var(--b)) calc(var(--px) + var(--b)) calc(var(--u) * 26); }
+[data-layout="tall"] .logo-slot { width: calc(var(--u) * 42); height: calc(var(--u) * 12.5); }
+[data-layout="tall"] .logo-ph { font-size: calc(var(--u) * 2.5); }
+[data-layout="tall"] .eyb { font-size: calc(var(--u) * 3.1); margin-top: calc(var(--u) * 6); }
+[data-layout="tall"] .h1 { font-size: calc(var(--u) * 10.4); margin-top: calc(var(--u) * 1.6); }
+[data-layout="tall"] .h1-sub { font-size: calc(var(--u) * 5.7); margin-top: calc(var(--u) * 1.8); }
+[data-layout="tall"] .qr-wrap { margin-top: calc(var(--u) * -21); display: flex; flex-direction: column; align-items: center; }
+[data-layout="tall"] .qr-tab { font-size: calc(var(--u) * 3.3); padding: calc(var(--u) * 1.5) calc(var(--u) * 5); border-radius: calc(var(--u) * 1.6) calc(var(--u) * 1.6) 0 0; }
+[data-layout="tall"] .qr-card { padding: calc(var(--u) * 2.6) calc(var(--u) * 2.6) calc(var(--u) * 3); border-radius: calc(var(--u) * 2.4); }
+[data-layout="tall"] .qr-box { width: calc(var(--u) * var(--qr)); height: calc(var(--u) * var(--qr)); }
+[data-layout="tall"] .qr-cap { font-size: calc(var(--u) * 3.3); margin-top: calc(var(--u) * 1); }
+[data-layout="tall"] .qr-url { font-size: calc(var(--u) * 2.2); margin-top: calc(var(--u) * .6); max-width: calc(var(--u) * (var(--qr) + 4)); }
+[data-layout="tall"] .steps { gap: calc(var(--u) * 3.2); margin-top: calc(var(--u) * 6.5); }
+[data-layout="tall"] .step { gap: calc(var(--u) * 4.4); }
+[data-layout="tall"] .step-no { width: calc(var(--u) * 9.4); height: calc(var(--u) * 9.4); font-size: calc(var(--u) * 5); background: var(--chinh); color: var(--nen-sang); }
+[data-layout="tall"] .step-t { font-size: calc(var(--u) * 4.4); color: var(--chu-chinh); }
+[data-layout="tall"] .step-s { font-size: calc(var(--u) * 3.2); color: var(--chu-phu); margin-top: calc(var(--u) * .4); }
+[data-layout="tall"] .chips-box { margin-top: calc(var(--u) * 6.5); }
+[data-layout="tall"] .chips-l { font-size: calc(var(--u) * 2.8); color: var(--chinh-dam); }
+[data-layout="tall"] .chips { gap: calc(var(--u) * 1.6); margin-top: calc(var(--u) * 2); }
+[data-layout="tall"] .chip { font-size: calc(var(--u) * 3); padding: calc(var(--u) * 1.1) calc(var(--u) * 2.8); border-radius: calc(var(--u) * 6); background: var(--nen-phu); color: var(--chu-chinh); border: calc(var(--u) * .25) solid var(--duong-ke); }
+[data-layout="tall"] .foot { margin: auto calc(-1 * (var(--px) + var(--b))) calc(-1 * (var(--pb) + var(--b))); padding: calc(var(--u) * 5) calc(var(--px) + var(--b)) calc(var(--pb) + var(--b)); background: var(--chinh-dam); border-top: calc(var(--u) * 1.6) solid var(--phu); }
+[data-layout="tall"] .hot-l { font-size: calc(var(--u) * 2.8); }
+[data-layout="tall"] .hot-n { font-size: calc(var(--u) * 9); margin-top: calc(var(--u) * .6); }
+[data-layout="tall"] .cb { font-size: calc(var(--u) * 3.2); margin-top: calc(var(--u) * 1); }
+[data-layout="tall"] .pgd { font-size: calc(var(--u) * 4.4); margin-top: calc(var(--u) * 3); padding-top: calc(var(--u) * 3); border-top: calc(var(--u) * .25) solid rgba(240, 235, 227, .35); }
+[data-layout="tall"] .addr { font-size: calc(var(--u) * 3.1); margin-top: calc(var(--u) * .8); }
+.step-k { display: none; }
+
+/* --- Bố cục thẻ: biển QR để bàn A5 --- */
+.trim[data-layout="card"] { --pt: calc(var(--u) * 5); --px: calc(var(--u) * 6.5); --pb: calc(var(--u) * 4.5); }
+[data-layout="card"] .hero { background: var(--chinh); margin: calc(-1 * (var(--pt) + var(--b))) calc(-1 * (var(--px) + var(--b))) 0; padding: calc(var(--pt) + var(--b)) calc(var(--px) + var(--b)) calc(var(--u) * 14.5); }
+[data-layout="card"] .hero-top { display: flex; align-items: center; justify-content: space-between; gap: calc(var(--u) * 3); }
+[data-layout="card"] .logo-slot { width: calc(var(--u) * 32); height: calc(var(--u) * 8.6); }
+[data-layout="card"] .logo-ph { font-size: calc(var(--u) * 2.1); }
+[data-layout="card"] .eyb { font-size: calc(var(--u) * 2.4); text-align: right; }
+[data-layout="card"] .h1 { font-size: calc(var(--u) * 7.5); margin-top: calc(var(--u) * 2.6); }
+[data-layout="card"] .h1-sub { font-size: calc(var(--u) * 4.4); margin-top: calc(var(--u) * .8); }
+[data-layout="card"] .qr-wrap { margin-top: calc(var(--u) * -11.5); display: flex; flex-direction: column; align-items: center; }
+[data-layout="card"] .qr-tab { font-size: calc(var(--u) * 2.6); padding: calc(var(--u) * 1) calc(var(--u) * 4); border-radius: calc(var(--u) * 1.3) calc(var(--u) * 1.3) 0 0; }
+[data-layout="card"] .qr-card { padding: calc(var(--u) * 1.6) calc(var(--u) * 1.6) calc(var(--u) * 1.8); border-radius: calc(var(--u) * 2); border-width: calc(var(--u) * .45); }
+[data-layout="card"] .qr-box { width: calc(var(--u) * var(--qr)); height: calc(var(--u) * var(--qr)); }
+[data-layout="card"] .qr-cap { font-size: calc(var(--u) * 2.6); margin-top: calc(var(--u) * .6); }
+[data-layout="card"] .qr-url { font-size: calc(var(--u) * 1.95); margin-top: calc(var(--u) * .4); max-width: calc(var(--u) * (var(--qr) + 4)); }
+[data-layout="card"] .steps { grid-template-columns: repeat(3, auto); justify-content: space-between; gap: calc(var(--u) * 2); margin-top: calc(var(--u) * 3.2); }
+[data-layout="card"] .step { gap: calc(var(--u) * 1.6); }
+[data-layout="card"] .step-no { width: calc(var(--u) * 5); height: calc(var(--u) * 5); font-size: calc(var(--u) * 2.8); background: var(--chinh); color: var(--nen-sang); }
+[data-layout="card"] .step-t, [data-layout="card"] .step-s, [data-layout="card"] .chips-box { display: none; }
+[data-layout="card"] .step-k { display: block; font-size: calc(var(--u) * 2.6); font-weight: 700; color: var(--chu-chinh); white-space: nowrap; }
+[data-layout="card"] .foot { margin: auto calc(-1 * (var(--px) + var(--b))) calc(-1 * (var(--pb) + var(--b))); padding: calc(var(--u) * 2.6) calc(var(--px) + var(--b)) calc(var(--pb) + var(--b)); background: var(--chinh-dam); border-top: calc(var(--u) * 1) solid var(--phu); display: grid; grid-template-columns: auto 1fr; gap: calc(var(--u) * .6) calc(var(--u) * 5); align-items: center; }
+[data-layout="card"] .band { display: grid; gap: calc(var(--u) * .5); }
+[data-layout="card"] .hot-l { font-size: calc(var(--u) * 2.1); }
+[data-layout="card"] .hot-n { font-size: calc(var(--u) * 5); margin-top: calc(var(--u) * .4); }
+[data-layout="card"] .cb { font-size: calc(var(--u) * 2); }
+[data-layout="card"] .pgd { font-size: calc(var(--u) * 2.8); }
+[data-layout="card"] .addr { font-size: calc(var(--u) * 2.1); }
+
+/* --- Bố cục ngang: backdrop 300×200. Trái: tiêu đề, các bước, nhu cầu vay; phải: mã QR + hotline; dưới: tên PGD --- */
+.trim[data-layout="wide"] { --pt: calc(var(--u) * 7); --px: calc(var(--u) * 9); --pb: calc(var(--u) * 5); }
+[data-layout="wide"] .bg { position: absolute; inset: calc(-1 * var(--b)); background: var(--chinh); }
+[data-layout="wide"] .ct { display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-rows: auto auto 1fr auto; column-gap: calc(var(--u) * 9); }
+[data-layout="wide"] .left { display: contents; }
+[data-layout="wide"] .hero { grid-column: 1; grid-row: 1; }
+[data-layout="wide"] .steps { grid-column: 1; grid-row: 2; }
+[data-layout="wide"] .chips-box { grid-column: 1; grid-row: 3; align-self: start; }
+[data-layout="wide"] .logo-slot { width: calc(var(--u) * 27); height: calc(var(--u) * 8); }
+[data-layout="wide"] .logo-ph { font-size: calc(var(--u) * 1.6); }
+[data-layout="wide"] .eyb { font-size: calc(var(--u) * 2.2); margin-top: calc(var(--u) * 4); }
+[data-layout="wide"] .h1 { font-size: calc(var(--u) * 8.4); margin-top: calc(var(--u) * 1.2); white-space: nowrap; }
+[data-layout="wide"] .h1-sub { font-size: calc(var(--u) * 4.3); margin-top: calc(var(--u) * 1.2); white-space: nowrap; }
+[data-layout="wide"] .qr-wrap { grid-column: 2; grid-row: 1 / span 3; align-self: start; display: flex; flex-direction: column; align-items: center; }
+[data-layout="wide"] .qr-tab { font-size: calc(var(--u) * 2.4); padding: calc(var(--u) * 1.1) calc(var(--u) * 4); border-radius: calc(var(--u) * 1.4) calc(var(--u) * 1.4) 0 0; background: var(--phu); color: var(--chu-chinh); }
+[data-layout="wide"] .qr-card { padding: calc(var(--u) * 2); border-radius: calc(var(--u) * 2); border-color: var(--phu); border-width: calc(var(--u) * .6); }
+[data-layout="wide"] .qr-box { width: calc(var(--u) * var(--qr)); height: calc(var(--u) * var(--qr)); }
+[data-layout="wide"] .qr-cap { font-size: calc(var(--u) * 2.1); margin-top: calc(var(--u) * .6); }
+[data-layout="wide"] .qr-url { font-size: calc(var(--u) * 1.45); margin-top: calc(var(--u) * .4); max-width: calc(var(--u) * (var(--qr) + 2)); }
+[data-layout="wide"] .steps { gap: calc(var(--u) * 1.8); margin-top: calc(var(--u) * 4); }
+[data-layout="wide"] .step { gap: calc(var(--u) * 2.4); }
+[data-layout="wide"] .step-no { width: calc(var(--u) * 5.8); height: calc(var(--u) * 5.8); font-size: calc(var(--u) * 3); background: var(--phu); color: var(--chu-chinh); }
+[data-layout="wide"] .step-t { font-size: calc(var(--u) * 2.8); color: var(--nen-sang); }
+[data-layout="wide"] .step-s { font-size: calc(var(--u) * 1.95); color: var(--nen-phu); margin-top: calc(var(--u) * .2); }
+[data-layout="wide"] .chips-box { margin-top: calc(var(--u) * 3.6); }
+[data-layout="wide"] .chips-l { font-size: calc(var(--u) * 1.7); color: var(--phu); }
+[data-layout="wide"] .chips { gap: calc(var(--u) * 1.1); margin-top: calc(var(--u) * 1.4); }
+[data-layout="wide"] .chip { font-size: calc(var(--u) * 1.95); padding: calc(var(--u) * .8) calc(var(--u) * 2); border-radius: calc(var(--u) * 5); background: var(--chinh-dam); color: var(--nen-sang); border: calc(var(--u) * .2) solid var(--phu); }
+/* Chân: hotline đặt dưới mã QR (cột phải), tên PGD + địa chỉ ở dải dưới */
+[data-layout="wide"] .foot { display: contents; }
+[data-layout="wide"] .hot { grid-column: 2; grid-row: 3; align-self: start; justify-self: center; text-align: center; margin-top: calc(var(--u) * 2.6); }
+[data-layout="wide"] .hot-l { font-size: calc(var(--u) * 1.8); }
+[data-layout="wide"] .hot-n { font-size: calc(var(--u) * 5.2); margin-top: calc(var(--u) * .3); }
+[data-layout="wide"] .band { grid-column: 1 / -1; grid-row: 4; margin: calc(var(--u) * 2) calc(-1 * (var(--px) + var(--b))) calc(-1 * (var(--pb) + var(--b))); padding: calc(var(--u) * 2.6) calc(var(--px) + var(--b)) calc(var(--pb) + var(--b)); background: var(--chinh-dam); border-top: calc(var(--u) * .9) solid var(--phu); display: flex; flex-wrap: wrap; align-items: baseline; gap: calc(var(--u) * .6) calc(var(--u) * 4); color: var(--nen-sang); }
+[data-layout="wide"] .pgd { font-size: calc(var(--u) * 2.8); }
+[data-layout="wide"] .addr { font-size: calc(var(--u) * 2); }
+[data-layout="wide"] .cb { font-size: calc(var(--u) * 2); margin-left: auto; order: 3; }
+[data-layout="wide"] .qr-wrap { grid-row: 1 / span 2; }
+
+/* Đường xén và vùng an toàn: chỉ hiện khi xem trước, không in */
+.guide-trim, .guide-safe { position: absolute; pointer-events: none; z-index: 5; }
+.guide-trim { outline: 2px dashed #00A0E0; }
+.guide-safe { outline: 2px dotted #E0007A; }
+.sheet:not(.guides) .guide-trim, .sheet:not(.guides) .guide-safe { display: none; }
+
+@media print {
+  html, body { background: none !important; }
+  .ui-wrap > :not(.app), .panel, .view-head, .view > :not(.stage) { display: none !important; }
+  .ui-wrap, .app, .view, .stage { display: block !important; padding: 0 !important; margin: 0 !important; border: 0 !important; background: none !important; max-width: none !important; min-height: 0 !important; overflow: visible !important; }
+  .scaler { width: auto !important; height: auto !important; }
+  .scaler > .sheet { position: relative !important; transform: none !important; }
+  .guide-trim, .guide-safe { display: none !important; }
+}
+</style>
+<style id="pageSize"></style>
+</head>
+<body>
+<div class="ui-wrap">
+  <header class="brand">
+    <span class="eyebrow">Ấn phẩm in · Mã QR phiếu vay</span>
+    <h1>Tạo standee, backdrop, biển QR để bàn</h1>
+  </header>
+  <p class="lead">Chọn khổ ấn phẩm, nhập số Zalo cán bộ (nếu cần), kiểm tra bản xem trước rồi bấm <b>In / Lưu PDF</b>. Trong hộp thoại in, chọn máy in <b>Lưu dưới dạng PDF</b>, lề <b>Không</b>, bật <b>Đồ họa nền</b>.</p>
+
+  <div class="app">
+    <form class="panel" id="cfg" novalidate>
+      <h2>Thiết lập</h2>
+      <div class="f"><label for="kho">Khổ ấn phẩm</label>
+        <select id="kho">
+          <option value="standee60">Standee 60 × 160 cm</option>
+          <option value="standee80">Standee 80 × 200 cm</option>
+          <option value="backdrop">Backdrop 300 × 200 cm</option>
+          <option value="a5">Biển QR để bàn A5 (14,8 × 21 cm)</option>
+        </select>
+      </div>
+      <label class="check"><input type="checkbox" id="bleed" checked><span>Thêm lề xén (bleed) 3 mm mỗi cạnh<br><span class="hint">Nhà in cần lề này để xén không bị hở mép trắng.</span></span></label>
+      <div class="f"><label for="link">Link phiếu vay</label><input type="url" id="link" inputmode="url" spellcheck="false"><span class="err" id="errLink" hidden>Link chưa đúng. Link phải bắt đầu bằng https://</span></div>
+      <div class="row">
+        <div class="f"><label for="ten">Tên cán bộ (tùy chọn)</label><input type="text" id="ten" placeholder="Ví dụ: Nguyễn Thị Lan"></div>
+        <div class="f"><label for="sdt">Số Zalo cán bộ</label><input type="tel" id="sdt" inputmode="numeric" maxlength="10" placeholder="09xxxxxxxx"><span class="err" id="errSdt" hidden>Số gồm 10 chữ số, bắt đầu bằng 0.</span></div>
+      </div>
+      <span class="hint">Có số Zalo cán bộ thì mã QR mở phiếu kèm <b>#số</b>: hồ sơ gửi về cả lãnh đạo PGD và cán bộ đó.</span>
+      <div class="f"><label for="pgd">Tên phòng giao dịch</label><input type="text" id="pgd"></div>
+      <div class="f"><label for="diachi">Địa chỉ</label><input type="text" id="diachi" placeholder="Số nhà, đường, phường, thành phố"></div>
+      <div class="f"><label for="hotline">Hotline / Zalo</label><input type="tel" id="hotline" inputmode="numeric" maxlength="11"></div>
+      <label class="check"><input type="checkbox" id="guides" checked><span>Hiện đường xén (xanh) và vùng an toàn (hồng) trên bản xem trước<br><span class="hint">Chỉ để kiểm tra, không in ra.</span></span></label>
+      <div class="f"><span class="lbl">Mã QR mở link</span><div class="qrlink" id="qrLink"></div></div>
+      <div class="actions">
+        <button type="button" class="btn primary" id="btnPrint">In / Lưu PDF</button>
+        <button type="button" class="btn ghost" id="btnSvg">Tải SVG mã QR</button>
+        <button type="button" class="btn ghost" id="btnCopy">Sao chép link thiết lập này</button>
+      </div>
+      <span class="err" id="fitWarn" hidden>Nội dung quá dài so với khổ này (mã QR đã co đến cỡ tối thiểu). Anh/chị rút gọn địa chỉ hoặc tên cán bộ.</span>
+      <span class="toast" id="toast" aria-live="polite"></span>
+    </form>
+
+    <section class="view">
+      <div class="view-head"><h2 id="viewTitle">Xem trước</h2><span class="hint" id="viewSize"></span></div>
+      <div class="stage" id="stage"><div class="scaler" id="scaler">
+        <div class="sheet guides" id="sheet">
+          <div class="trim" id="trim">
+            <div class="bg"></div>
+            <div class="ct">
+              <div class="left">
+                <div class="hero">
+                  <div class="hero-top">
+                    <div class="logo-slot empty" id="logoSlot"><span class="logo-ph hd" id="logoPh">Dán logo Agribank gốc (logo.png)</span></div>
+                    <div class="eyb hd">Khách hàng cá nhân</div>
+                  </div>
+                  <p class="h1 hd">Vay vốn nhanh</p>
+                  <p class="h1-sub hd">Quét mã, điền phiếu online</p>
+                </div>
+                <div class="qr-wrap" id="qrWrapTall">
+                  <div class="qr-tab hd">Quét mã để điền phiếu</div>
+                  <div class="qr-card">
+                    <div class="qr-box" id="qrBox"></div>
+                    <div class="qr-cap">Dùng Zalo hoặc camera điện thoại</div>
+                    <div class="qr-url" id="qrUrl"></div>
+                  </div>
+                </div>
+                <div class="steps">
+                  <div class="step"><span class="step-no hd">1</span><div><div class="step-k hd">Quét mã QR</div><div class="step-t hd">Quét mã QR</div><div class="step-s">bằng Zalo hoặc camera điện thoại</div></div></div>
+                  <div class="step"><span class="step-no hd">2</span><div><div class="step-k hd">Điền phiếu</div><div class="step-t hd">Điền thông tin, chụp giấy tờ</div><div class="step-s">ngay trên điện thoại, rồi bấm gửi</div></div></div>
+                  <div class="step"><span class="step-no hd">3</span><div><div class="step-k hd">Cán bộ tư vấn</div><div class="step-t hd">Cán bộ liên hệ tư vấn</div><div class="step-s">hướng dẫn hồ sơ và các bước tiếp theo</div></div></div>
+                </div>
+                <div class="chips-box">
+                  <div class="chips-l hd">Nhu cầu vay</div>
+                  <div class="chips">
+                    <span class="chip">Mua nhà, đất</span><span class="chip">Xây sửa nhà</span><span class="chip">Mua ô tô</span>
+                    <span class="chip">Tiêu dùng</span><span class="chip">Bổ sung vốn kinh doanh</span><span class="chip">Cầm cố sổ tiết kiệm</span>
+                  </div>
+                </div>
+              </div>
+              <div class="foot">
+                <div class="hot"><div class="hot-l hd">Hotline / Zalo</div><div class="hot-n hd" id="outHot"></div></div>
+                <div class="band">
+                  <div class="cb" id="outCb" hidden></div>
+                  <div class="pgd hd" id="outPgd"></div>
+                  <div class="addr" id="outAddr"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="guide-trim" id="gTrim"></div>
+          <div class="guide-safe" id="gSafe"></div>
+        </div>
+      </div></div>
+    </section>
+  </div>
+</div>
+
+<script src="vendor/qrcode.js"></script>
+<script>
+(function () {
+  const $ = s => document.querySelector(s);
+
+  // Các khổ ấn phẩm (kích thước thành phẩm, đơn vị mm). nguon: giá trị ?nguon= để phiếu biết khách đến từ kênh nào
+  const KHO = {
+    // qr: cạnh mã QR mặc định, qrMin: tối thiểu khi phải co (đơn vị u = 1% cạnh ngang, backdrop: 1% cạnh dọc)
+    // qrMin ứng với: standee ≥ 25 cm, backdrop ≥ 50 cm, A5 ≥ 9 cm
+    standee60: { ten: 'Standee 60 × 160 cm', w: 600, h: 1600, nguon: 'standee', layout: 'tall', file: 'standee-60x160', qr: 60, qrMin: 42, gap: 4 },
+    standee80: { ten: 'Standee 80 × 200 cm', w: 800, h: 2000, nguon: 'standee', layout: 'tall', file: 'standee-80x200', qr: 60, qrMin: 34, gap: 4 },
+    backdrop: { ten: 'Backdrop 300 × 200 cm', w: 3000, h: 2000, nguon: 'backdrop', layout: 'wide', file: 'backdrop-300x200', qr: 42, qrMin: 25, gap: 2 },
+    a5: { ten: 'Biển QR để bàn A5', w: 148, h: 210, nguon: 'ban-qr', layout: 'card', file: 'bien-qr-A5', qr: 61.5, qrMin: 60.9, gap: 2 }
+  };
+  const BLEED = 3; // mm
+  const DEF = {
+    link: 'https://dungbank2026-bot.github.io/Phieu-thu-thap-thong-tin-khach-h-ng-ca-nhan-vay-von/',
+    pgd: 'Phòng giao dịch Yên Hòa',
+    hotline: '0904532088'
+  };
+  const QR_DARK = '#1C1A17'; // chu-chinh trên nền trắng, không dùng chuyển màu
+  const PX_PER_MM = 96 / 25.4;
+
+  // Đọc thiết lập từ link: ?kho=standee60&sdt=0912345678&ten=...&pgd=...&diachi=...&hotline=...&link=...&bleed=0
+  const q = new URLSearchParams(location.search);
+  const get = (k, d) => q.has(k) ? q.get(k) : d;
+  $('#kho').value = KHO[get('kho', '')] ? get('kho') : 'standee60';
+  $('#link').value = get('link', DEF.link);
+  $('#ten').value = get('ten', '');
+  $('#sdt').value = (get('sdt', '') || '').replace(/\D/g, '');
+  $('#pgd').value = get('pgd', DEF.pgd);
+  $('#diachi').value = get('diachi', '');
+  $('#hotline').value = (get('hotline', DEF.hotline) || '').replace(/\D/g, '');
+  $('#bleed').checked = get('bleed', '1') !== '0';
+  $('#guides').checked = get('khung', '1') !== '0';
+
+  const fmtPhone = p => p.length === 10 ? p.replace(/(\d{4})(\d{3})(\d{3})/, '$1 $2 $3') : p.length === 11 ? p.replace(/(\d{4})(\d{3})(\d{4})/, '$1 $2 $3') : p;
+
+  // Mã QR dạng SVG (vector): lỗi mức Q, vùng trắng 4 mô-đun, mô-đun tối liền thành từng đoạn ngang
+  function qrSvg(text, withSize) {
+    qrcode.stringToBytes = qrcode.stringToBytesFuncs['UTF-8'];
+    const qr = qrcode(0, 'Q'); qr.addData(text, 'Byte'); qr.make();
+    const n = qr.getModuleCount(), m = 4, N = n + 2 * m;
+    let d = '';
+    for (let r = 0; r < n; r++) {
+      let c = 0;
+      while (c < n) {
+        if (!qr.isDark(r, c)) { c++; continue; }
+        const s = c; while (c < n && qr.isDark(r, c)) c++;
+        d += 'M' + (s + m) + ' ' + (r + m) + 'h' + (c - s) + 'v1h' + (s - c) + 'z';
+      }
+    }
+    const size = withSize ? ' width="' + N * 10 + '" height="' + N * 10 + '"' : '';
+    return '<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 ' + N + ' ' + N + '"' + size + ' shape-rendering="crispEdges" role="img" aria-label="Mã QR mở phiếu thông tin vay vốn">'
+      + '<rect width="' + N + '" height="' + N + '" fill="#FFFFFF"/><path fill="' + QR_DARK + '" d="' + d + '"/></svg>';
+  }
+
+  // Ô logo: thử logo.png rồi logo.svg; không có thì giữ khung chờ
+  (function loadLogo() {
+    const slot = $('#logoSlot'), list = ['logo.png', 'logo.svg'];
+    let i = 0;
+    const img = new Image(); img.alt = 'Logo';
+    img.onload = () => { slot.classList.remove('empty'); slot.innerHTML = ''; slot.appendChild(img); window.__logo = 'ok'; };
+    img.onerror = () => { i++; if (i < list.length) img.src = list[i]; else window.__logo = 'none'; };
+    img.src = list[0];
+  })();
+
+  let state = {};
+  function render() {
+    const k = KHO[$('#kho').value];
+    const bleed = $('#bleed').checked ? BLEED : 0;
+    const sdt = $('#sdt').value.trim();
+    const sdtOk = /^0\d{9}$/.test(sdt);
+    $('#errSdt').hidden = !sdt || sdtOk; $('#sdt').closest('.f').classList.toggle('bad', !!sdt && !sdtOk);
+
+    // Link trong mã QR: link phiếu + ?nguon=<kênh> + #số Zalo cán bộ
+    let url = null, shown = '';
+    try {
+      const u = new URL($('#link').value.trim());
+      if (/^https?:$/.test(u.protocol)) {
+        shown = (u.host + u.pathname).replace(/\/$/, '');
+        u.searchParams.set('nguon', k.nguon);
+        if (sdtOk) u.hash = sdt;
+        url = u.href;
+      }
+    } catch (e) { url = null; }
+    $('#errLink').hidden = !!url; $('#link').closest('.f').classList.toggle('bad', !url);
+    if (url) {
+      $('#qrBox').innerHTML = qrSvg(url, false);
+      $('#qrLink').innerHTML = '<b></b>'; $('#qrLink').firstChild.textContent = url;
+      $('#qrUrl').innerHTML = shown.split('/').map(s => s.replace(/[&<>]/g, '')).join('/<wbr>');
+    }
+
+    // Nội dung chân ấn phẩm
+    const hot = $('#hotline').value.replace(/\D/g, '');
+    $('#outHot').textContent = fmtPhone(hot);
+    $('#outHot').parentElement.hidden = !hot;
+    const ten = $('#ten').value.trim();
+    $('#outCb').hidden = !sdtOk;
+    $('#outCb').textContent = sdtOk ? 'Cán bộ tư vấn: ' + (ten ? ten + ' – ' : '') + fmtPhone(sdt) : '';
+    $('#outPgd').textContent = $('#pgd').value.trim();
+    $('#outPgd').hidden = !$('#pgd').value.trim();
+    $('#outAddr').textContent = $('#diachi').value.trim();
+    $('#outAddr').hidden = !$('#diachi').value.trim();
+
+    // Kích thước trang = thành phẩm + 2 × lề xén
+    const W = k.w + 2 * bleed, H = k.h + 2 * bleed;
+    const sheet = $('#sheet'), trim = $('#trim');
+    sheet.style.width = W + 'mm'; sheet.style.height = H + 'mm';
+    trim.style.inset = bleed + 'mm'; trim.style.setProperty('--b', bleed + 'mm');
+    trim.dataset.layout = k.layout; trim.dataset.kho = $('#kho').value;
+    $('#gTrim').style.inset = bleed + 'mm';
+    // Vùng an toàn hiển thị: tối thiểu 3% cạnh ngắn (nội dung chữ thực tế còn lùi vào sâu hơn)
+    const safe = Math.max(3, Math.round(Math.min(k.w, k.h) * 0.03));
+    $('#gSafe').style.inset = (bleed + safe) + 'mm';
+    sheet.classList.toggle('guides', $('#guides').checked);
+    $('#pageSize').textContent = '@page { size: ' + W + 'mm ' + H + 'mm; margin: 0; }\n'
+      + '@media print { html, body { width: ' + W + 'mm; height: ' + H + 'mm; overflow: hidden; } }';
+    $('#viewTitle').textContent = 'Xem trước: ' + k.ten;
+    const cm = v => String(v / 10).replace('.', ',');
+    $('#viewSize').textContent = 'Trang PDF ' + cm(W) + ' × ' + cm(H) + ' cm' + (bleed ? ' (đã gồm lề xén ' + bleed + ' mm mỗi cạnh)' : ' (không lề xén)');
+    state = { k, url, sdt: sdtOk ? sdt : '', W, H };
+    fit();
+    autoFit();
+  }
+
+  // Tự co mã QR khi nội dung (địa chỉ dài, thêm dòng cán bộ) chạm phần chân; không co dưới cỡ tối thiểu
+  function autoFit() {
+    const k = state.k, trim = $('#trim'), sheet = $('#sheet');
+    const wide = k.layout === 'wide';
+    const measure = () => {
+      const sb = sheet.getBoundingClientRect(), sc = sb.width / sheet.offsetWidth;
+      const unit = (wide ? trim.offsetHeight : trim.offsetWidth) / 100 * sc * (trim.dataset.kho === 'standee80' ? 0.9375 : 1);
+      const bottomEl = wide ? $('.band') : $('.foot');
+      const bb = bottomEl.getBoundingClientRect();
+      const items = Array.from(document.querySelectorAll(wide ? '.left > *, .hot' : '.left > *')).filter(e => e.offsetParent && e.getBoundingClientRect().height);
+      const contentBottom = Math.max.apply(null, items.map(e => e.getBoundingClientRect().bottom));
+      return { over: bb.bottom - sb.bottom > 0.5, tight: bb.top - contentBottom < k.gap * unit };
+    };
+    let qr = k.qr, m;
+    trim.style.setProperty('--qr', qr);
+    for (let i = 0; i < 200; i++) {
+      m = measure();
+      if (!m.over && !m.tight) break;
+      if (qr <= k.qrMin) break;
+      qr = Math.max(k.qrMin, qr - 0.5); trim.style.setProperty('--qr', qr);
+    }
+    $('#fitWarn').hidden = !(m.over || m.tight);
+  }
+
+  // Thu nhỏ bản xem trước cho vừa khung
+  function fit() {
+    const stage = $('#stage'), scaler = $('#scaler'), sheet = $('#sheet');
+    const wPx = state.W * PX_PER_MM, hPx = state.H * PX_PER_MM;
+    const availW = stage.clientWidth - 32;
+    const availH = Math.max(320, window.innerHeight - (window.innerWidth > 900 ? 90 : 140));
+    const s = Math.min(availW / wPx, availH / hPx, 1);
+    sheet.style.transform = 'scale(' + s + ')';
+    scaler.style.width = wPx * s + 'px'; scaler.style.height = hPx * s + 'px';
+  }
+
+  $('#cfg').addEventListener('input', render);
+  $('#cfg').addEventListener('change', render);
+  window.addEventListener('resize', fit);
+  $('#sdt').addEventListener('input', e => { e.target.value = e.target.value.replace(/\D/g, ''); });
+  $('#hotline').addEventListener('input', e => { e.target.value = e.target.value.replace(/\D/g, ''); });
+
+  const toast = t => { $('#toast').textContent = t; };
+  $('#btnPrint').addEventListener('click', async () => {
+    if (!state.url) { toast('Kiểm tra lại link phiếu vay trước khi in.'); return; }
+    try { await document.fonts.ready; } catch (e) {}
+    window.print();
+  });
+  $('#btnSvg').addEventListener('click', () => {
+    if (!state.url) { toast('Kiểm tra lại link phiếu vay.'); return; }
+    const blob = new Blob(['<?xml version="1.0" encoding="UTF-8"?>\n' + qrSvg(state.url, true)], { type: 'image/svg+xml' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'ma-qr-' + state.k.nguon + (state.sdt ? '-' + state.sdt : '') + '.svg';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+    toast('Đã tải tệp ' + a.download + '.');
+  });
+  $('#btnCopy').addEventListener('click', () => {
+    const p = new URLSearchParams();
+    p.set('kho', $('#kho').value);
+    if ($('#link').value.trim() !== DEF.link) p.set('link', $('#link').value.trim());
+    if ($('#ten').value.trim()) p.set('ten', $('#ten').value.trim());
+    if (state.sdt) p.set('sdt', state.sdt);
+    if ($('#pgd').value.trim() !== DEF.pgd) p.set('pgd', $('#pgd').value.trim());
+    if ($('#diachi').value.trim()) p.set('diachi', $('#diachi').value.trim());
+    if ($('#hotline').value !== DEF.hotline) p.set('hotline', $('#hotline').value);
+    if (!$('#bleed').checked) p.set('bleed', '0');
+    const link = location.href.split(/[?#]/)[0] + '?' + p.toString();
+    const done = () => toast('Đã sao chép link. Mở link này để có sẵn thiết lập.');
+    try { navigator.clipboard.writeText(link).then(done, () => prompt('Sao chép link:', link)); } catch (e) { prompt('Sao chép link:', link); }
+  });
+
+  render();
+  // Đo lại khi phông chữ đã nạp xong (cỡ chữ thật ảnh hưởng việc tự co mã QR)
+  (document.fonts ? document.fonts.ready : Promise.resolve()).then(() => { render(); window.__ready = true; });
+})();
+</script>
+</body>
+</html>
